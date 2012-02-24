@@ -32,3 +32,33 @@ void EditDialog::setTextValue(const QString &value)
 {
 	ui.valueEdit->setPlainText(value);
 }
+
+void EditDialog::connectCutAction(QAction* action)
+{
+	connect(action, SIGNAL(triggered()), ui.valueEdit, SLOT(cut()));
+}
+
+void EditDialog::connectCopyAction(QAction* action)
+{
+	connect(action, SIGNAL(triggered()), ui.valueEdit, SLOT(copy()));
+}
+
+void EditDialog::connectPasteAction(QAction* action)
+{
+	connect(action, SIGNAL(triggered()), ui.valueEdit, SLOT(paste()));
+}
+
+void EditDialog::disconnectCutAction(QAction* action)
+{
+	disconnect(action, SIGNAL(triggered()), ui.valueEdit, SLOT(cut()));
+}
+
+void EditDialog::disconnectCopyAction(QAction* action)
+{
+	disconnect(action, SIGNAL(triggered()), ui.valueEdit, SLOT(copy()));
+}
+
+void EditDialog::disconnectPasteAction(QAction* action)
+{
+	disconnect(action, SIGNAL(triggered()), ui.valueEdit, SLOT(paste()));
+}

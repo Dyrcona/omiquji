@@ -23,6 +23,8 @@
 #include "ui_mainwindow.h"
 #include "omidoc.hh"
 
+class EditDialog;
+
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -56,6 +58,8 @@ private:
 	bool saveFile(const QString&);
 	void setCurrentFile(const QString&);
 	QString strippedName(const QString&);
+	void connectEditMenu(EditDialog*);
+	void disconnectEditMenu(EditDialog*);
 
 	Ui::MainWindow ui;
 	OmiDoc *doc;

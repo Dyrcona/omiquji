@@ -29,6 +29,12 @@ public:
 
 	QString textValue();
 	void setTextValue(const QString&);
+	void connectCutAction(QAction*);
+	void connectCopyAction(QAction*);
+	void connectPasteAction(QAction*);
+	void disconnectCutAction(QAction*);
+	void disconnectCopyAction(QAction*);
+	void disconnectPasteAction(QAction*);
 
 private:
 	Ui::EditDialog ui;

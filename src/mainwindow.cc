@@ -30,6 +30,7 @@ MainWindow::MainWindow() : QMainWindow()
 
 	doc = 0;
 
+	disconnectEditMenu(0);
 	// Menu actions
 	connect(ui.action_New, SIGNAL(triggered()), this, SLOT(newFile()));
 	connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
@@ -51,7 +52,8 @@ MainWindow::MainWindow() : QMainWindow()
 
 void MainWindow::addComment()
 {
-	EditDialog dlg( this );
+	EditDialog dlg(this);
+	connectEditMenu(&dlg);
 	dlg.setWindowTitle(tr("Add Comment"));
 
 	if (dlg.exec() == QDialog::Accepted) {
@@ -62,6 +64,7 @@ void MainWindow::addComment()
 		doc->addComment(text);
 		setWindowModified(true);
 	}
+	disconnectEditMenu(&dlg);
 }
 
 void MainWindow::deleteComment()
@@ -81,6 +84,7 @@ void MainWindow::editComment()
 
 	QString entry = ui.commentList->currentItem()->text();
 	EditDialog dlg(this);
+	connectEditMenu(&dlg);
 	dlg.setWindowTitle(tr("Edit Comment"));
 	dlg.setTextValue(entry);
 
@@ -92,11 +96,13 @@ void MainWindow::editComment()
 		ui.commentList->currentItem()->setText(dlg.textValue());
 		setWindowModified(true);
 	}
+	disconnectEditMenu(&dlg);
 }
 
 void MainWindow::addFortune()
 {
-	EditDialog dlg( this );
+	EditDialog dlg(this);
+	connectEditMenu(&dlg);
 	dlg.setWindowTitle(tr("Add Fortune"));
 
 	if (dlg.exec() == QDialog::Accepted) {
@@ -107,6 +113,7 @@ void MainWindow::addFortune()
 		doc->addFortune(text);
 		setWindowModified(true);
 	}
+	disconnectEditMenu(&dlg);
 }
 
 void MainWindow::deleteFortune()
@@ -126,6 +133,7 @@ void MainWindow::editFortune()
 
 	QString entry = ui.fortuneList->currentItem()->text();
 	EditDialog dlg(this);
+	connectEditMenu(&dlg);
 	dlg.setWindowTitle(tr("Edit Fortune"));
 	dlg.setTextValue(entry);
 
@@ -137,6 +145,7 @@ void MainWindow::editFortune()
 		ui.fortuneList->currentItem()->setText(dlg.textValue());
 		setWindowModified(true);
 	}
+	disconnectEditMenu(&dlg);
 }
 
 void MainWindow::setCurrentFile(const QString& filename)
@@ -289,4 +298,26 @@ void MainWindow::closeEvent(QCloseEvent *event)
 		event->accept();
 	else
 		event->ignore();
+}
+
+void MainWindow::connectEditMenu(EditDialog* dialog)
+{
+	ui.actionCut->setEnabled(true);
+	ui.actionCopy->setEnabled(true);
+	ui.actionPaste->setEnabled(true);
+	dialog->connectCutAction(ui.actionCut);
+	dialog->connectCopyAction(ui.actionCopy);
+	dialog->connectPasteAction(ui.actionPaste);
+}
+
+void MainWindow::disconnectEditMenu(EditDialog* dialog)
+{
+	if (dialog) {
+		dialog->disconnectCutAction(ui.actionCut);
+		dialog->disconnectCopyAction(ui.actionCopy);
+		dialog->disconnectPasteAction(ui.actionPaste);
+	}
+	ui.actionCut->setEnabled(false);
+	ui.actionCopy->setEnabled(false);
+	ui.actionPaste->setEnabled(false);
 }
