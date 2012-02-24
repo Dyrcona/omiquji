@@ -1,0 +1,8 @@
+			  README for Omiquji
+			   19 February 2012
+
+	       Copyright © 2012 Jason J. A. Stephenson
+			  <jason@sigio.com>
+
+Omiquji is a GUI editor for omikuji files.  It is written using the Qt
+toolkit.
