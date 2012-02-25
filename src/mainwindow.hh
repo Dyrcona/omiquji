@@ -59,7 +59,7 @@ private:
 	void setCurrentFile(const QString&);
 	QString strippedName(const QString&);
 	void connectEditMenu(EditDialog*);
-	void disconnectEditMenu(EditDialog*);
+	void disconnectEditMenu(EditDialog *dialog=0);
 
 	Ui::MainWindow ui;
 	OmiDoc *doc;

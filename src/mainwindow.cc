@@ -30,7 +30,7 @@ MainWindow::MainWindow() : QMainWindow()
 
 	doc = 0;
 
-	disconnectEditMenu(0);
+	disconnectEditMenu();
 	// Menu actions
 	connect(ui.action_New, SIGNAL(triggered()), this, SLOT(newFile()));
 	connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
