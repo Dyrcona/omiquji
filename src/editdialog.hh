@@ -24,6 +24,8 @@
 
 class EditDialog : public QDialog
 {
+	Q_OBJECT
+
 public:
 	EditDialog(QWidget *parent=0);
 

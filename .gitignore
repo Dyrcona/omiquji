@@ -15,3 +15,5 @@ src/moc_aboutdialog.cpp
 src/moc_aboutdialog.o
 src/qrc_omiquji.cpp
 src/qrc_omiquji.o
+src/moc_editdialog.cpp
+src/moc_editdialog.o
