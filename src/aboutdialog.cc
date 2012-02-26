@@ -17,9 +17,16 @@
  * along with omiquji.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "aboutdialog.hh"
+#include <QUrl>
+#include <QDesktopServices>
 
 AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
-	connect(ui.pushButton, SIGNAL(clicked()), this, SLOT(close()));
+	connect(ui.gplButton, SIGNAL(clicked()), this, SLOT(gplButtonClicked()));
+}
+
+void AboutDialog::gplButtonClicked()
+{
+	QDesktopServices::openUrl(QUrl("http://www.gnu.org/licenses"));
 }

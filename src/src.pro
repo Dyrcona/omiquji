@@ -19,6 +19,7 @@ TARGET = omiquji
 
 DESTDIR=../
 
+RESOURCES = ../omiquji.qrc
 SOURCES += main.cc mainwindow.cc editdialog.cc omidoc.cc aboutdialog.cc
 HEADERS += mainwindow.hh editdialog.hh omidoc.hh aboutdialog.hh
 FORMS   += mainwindow.ui editdialog.ui aboutdialog.ui

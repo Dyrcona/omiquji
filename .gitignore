@@ -11,3 +11,7 @@ src/omidoc.o
 src/ui_aboutdialog.h
 src/ui_editdialog.h
 src/ui_mainwindow.h
+src/moc_aboutdialog.cpp
+src/moc_aboutdialog.o
+src/qrc_omiquji.cpp
+src/qrc_omiquji.o

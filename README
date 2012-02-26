@@ -8,7 +8,7 @@ Omiquji is a GUI editor for omikuji files.  It is written using the Qt
 toolkit.  It has a Q in its name to distinguish it from the command
 line omikuji program more so than to indicate the Qt heritage.
 
-I threw it togetheer in just a couple of days, so it still has some
+I threw it together in just a couple of days, so it still has some
 rough edges and no real documentation.
 
 To build and install it, simply run qmake -recursive in the top level
