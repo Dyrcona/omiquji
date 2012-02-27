@@ -24,6 +24,7 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 	connect(ui.gplButton, SIGNAL(clicked()), this, SLOT(gplButtonClicked()));
+	setAttribute(Qt::WA_DeleteOnClose);
 }
 
 void AboutDialog::gplButtonClicked()
