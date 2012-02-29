@@ -179,8 +179,8 @@ bool MainWindow::checkDocForSave()
 		return true;
 	else {
 		QMessageBox::warning(this, "omiquji",
-							 tr("There is no doument to save."),
-							 QMessageBox::Ok);
+			tr("There is no doument to save."),
+			QMessageBox::Ok);
 		return false;
 	}
 }
@@ -255,7 +255,7 @@ void MainWindow::open()
 		win = this;
 	QString filename =
 		QFileDialog::getOpenFileName(this, tr("Open Omifile"), ".",
-									 tr("Omifiles (*.omi)"));
+			tr("Omifiles (*.omi)"));
 	if (!filename.isEmpty())
 		win->loadFile(filename);
 	if (win != this) {
@@ -279,7 +279,7 @@ bool MainWindow::saveAs()
 	if (checkDocForSave()) {
 		QString filename =
 			QFileDialog::getSaveFileName(this, tr("Save Omifile"), ".",
-										 tr("Omifiles (*.omi)"));
+				tr("Omifiles (*.omi)"));
 		if (!filename.isEmpty())
 			return saveFile(filename);
 	}

@@ -138,7 +138,7 @@ int OmiDoc::writeToStream(QDataStream& stream)
 	}
 	// Write it to the stream.
 	bytesOut += stream.writeRawData((const char*)&header,
-									sizeof(OmikujiHeader));
+		sizeof(OmikujiHeader));
 
 	// List to hold the UTF-8 comment and fortune output:
 	QList<QByteArray> *outputList = 0;
@@ -157,7 +157,7 @@ int OmiDoc::writeToStream(QDataStream& stream)
 			offset += entry.size();
 		}
 		bytesOut += stream.writeRawData((const char*)commentTable,
-										comments * sizeof(TableEntry));
+			comments * sizeof(TableEntry));
 		delete commentTable;
 	}
 
@@ -175,7 +175,7 @@ int OmiDoc::writeToStream(QDataStream& stream)
 			offset += entry.size();
 		}
 		bytesOut += stream.writeRawData((const char*)fortuneTable,
-										fortunes * sizeof(TableEntry));
+			fortunes * sizeof(TableEntry));
 		delete fortuneTable;
 	}
 
@@ -225,9 +225,8 @@ OmiDoc* OmiDoc::newFromRawData(char* data, int len)
 						copyTableEntry(&entry, data, offset);
 						if (entry.offset >= sizeof(OmikujiHeader)
 							&& entry.offset + entry.length <= len) {
-							QString str =
-								QString::fromUtf8((data + entry.offset),
-												  entry.length);
+							QString str = QString::fromUtf8((data + entry.offset),
+								entry.length);
 							doc->addComment(str);
 						}
 					}
@@ -245,9 +244,8 @@ OmiDoc* OmiDoc::newFromRawData(char* data, int len)
 						copyTableEntry(&entry, data, offset);
 						if (entry.offset >= sizeof(OmikujiHeader)
 							&& entry.offset + entry.length <= len) {
-							QString str =
-								QString::fromUtf8((data + entry.offset),
-												  entry.length);
+							QString str = QString::fromUtf8((data + entry.offset),
+								entry.length);
 							doc->addFortune(str);
 						}
 					}
