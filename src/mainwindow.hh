@@ -30,7 +30,7 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 public:
-	MainWindow();
+	MainWindow(bool shouldUpdateActions = false);
 
 public slots:
 
@@ -50,6 +50,7 @@ private slots:
 	bool save();
 	bool saveAs();
 	void about();
+	void openRecentFile();
 
 private:
 	bool okToContinue();
@@ -57,13 +58,24 @@ private:
 	bool loadFile(const QString&);
 	bool saveFile(const QString&);
 	void setCurrentFile(const QString&);
-	QString strippedName(const QString&);
 	void connectEditMenu(EditDialog*);
 	void disconnectEditMenu(EditDialog *dialog=0);
+	void readSettings();
+	void writeSettings();
+	void openFile(const QString&);
+	void updateRecentFileActions();
 
 	Ui::MainWindow ui;
 	OmiDoc *doc;
 	QString currentFilename;
+	QMenu *recentFileMenu;
+	QList<QAction *> recentFileActions;
+
+	static int maxRecentFiles;
+	static QSettings *settings;
+	static QStringList recentFiles;
+	static void addRecentFile(const QString&);
+	static void cleanupRecentFiles();
 }; 
 
 #endif

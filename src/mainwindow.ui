@@ -36,7 +36,7 @@
          <x>690</x>
          <y>20</y>
          <width>87</width>
-         <height>95</height>
+         <height>107</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -86,7 +86,7 @@
          <x>690</x>
          <y>20</y>
          <width>87</width>
-         <height>95</height>
+         <height>107</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -123,7 +123,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>25</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -133,6 +133,7 @@
     <addaction name="separator"/>
     <addaction name="action_New"/>
     <addaction name="action_Open"/>
+    <addaction name="actionOpenRecentFiles"/>
     <addaction name="action_Save"/>
     <addaction name="actionSave_As"/>
     <addaction name="separator"/>
@@ -159,7 +160,7 @@
      <bool>false</bool>
     </property>
     <property name="title">
-     <string> </string>
+     <string/>
     </property>
     <property name="separatorsCollapsible">
      <bool>true</bool>
@@ -248,6 +249,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="actionOpenRecentFiles">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Open Recent</string>
+   </property>
+   <property name="toolTip">
+    <string>Open Recent Files</string>
    </property>
   </action>
  </widget>

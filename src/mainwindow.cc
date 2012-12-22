@@ -20,17 +20,29 @@
 #include "editdialog.hh"
 #include "aboutdialog.hh"
 
-MainWindow::MainWindow() : QMainWindow()
+int MainWindow::maxRecentFiles = 0;
+QSettings *MainWindow::settings = 0;
+QStringList MainWindow::recentFiles;
+
+MainWindow::MainWindow(bool shouldUpdateActions) : QMainWindow()
 {
 	ui.setupUi(this);
 
 	setAttribute(Qt::WA_DeleteOnClose);
+
+	readSettings();
+
+	recentFileMenu = 0;
 
 	setCurrentFile("");
 
 	doc = 0;
 
 	disconnectEditMenu();
+
+	if (shouldUpdateActions)
+		updateRecentFileActions();
+
 	// Menu actions
 	connect(ui.action_New, SIGNAL(triggered()), this, SLOT(newFile()));
 	connect(ui.action_Open, SIGNAL(triggered()), this, SLOT(open()));
@@ -153,8 +165,10 @@ void MainWindow::setCurrentFile(const QString& filename)
 	currentFilename = filename;
 	setWindowModified(false);
 	QString shownName = tr("Untitled");
-	if (!currentFilename.isEmpty())
+	if (!currentFilename.isEmpty()) {
 		shownName = QFileInfo(currentFilename).fileName();
+		MainWindow::addRecentFile(filename);
+	}
 	setWindowTitle(tr("%1[*] - omiquji").arg(shownName));
 }
 
@@ -242,20 +256,33 @@ bool MainWindow::loadFile(const QString& filename)
 
 void MainWindow::newFile()
 {
-	MainWindow *win = new MainWindow();
+	MainWindow *win = new MainWindow(true);
 	win->show();
 }
 
 void MainWindow::open()
+{
+	QString filename =
+		QFileDialog::getOpenFileName(this, tr("Open Omifile"), ".",
+			tr("Omifiles (*.omi)"));
+	if (!filename.isEmpty())
+		this->openFile(filename);
+}
+
+void MainWindow::openRecentFile()
+{
+	QAction *action = qobject_cast<QAction *>(sender());
+	if (action)
+		this->openFile(action->data().toString());
+}
+
+void MainWindow::openFile(const QString& filename)
 {
 	MainWindow *win;
 	if (doc)
 		win = new MainWindow();
 	else
 		win = this;
-	QString filename =
-		QFileDialog::getOpenFileName(this, tr("Open Omifile"), ".",
-			tr("Omifiles (*.omi)"));
 	if (!filename.isEmpty())
 		win->loadFile(filename);
 	if (win != this) {
@@ -280,8 +307,12 @@ bool MainWindow::saveAs()
 		QString filename =
 			QFileDialog::getSaveFileName(this, tr("Save Omifile"), ".",
 				tr("Omifiles (*.omi)"));
-		if (!filename.isEmpty())
-			return saveFile(filename);
+		if (!filename.isEmpty()) {
+			bool result = saveFile(filename);
+			if (result)
+				MainWindow::addRecentFile(filename);
+			return result;
+		}
 	}
 	return false;
 }
@@ -294,8 +325,10 @@ void MainWindow::about()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-	if (okToContinue())
+	if (okToContinue()) {
+		this->writeSettings();
 		event->accept();
+	}
 	else
 		event->ignore();
 }
@@ -320,4 +353,79 @@ void MainWindow::disconnectEditMenu(EditDialog* dialog)
 	ui.actionCut->setEnabled(false);
 	ui.actionCopy->setEnabled(false);
 	ui.actionPaste->setEnabled(false);
+}
+
+void MainWindow::readSettings()
+{
+	if (!MainWindow::settings) {
+		MainWindow::settings = new QSettings();
+		MainWindow::maxRecentFiles = MainWindow::settings->value("maxRecentFiles", QVariant(10)).toInt();
+		MainWindow::recentFiles = MainWindow::settings->value("recentFiles").toStringList();
+		MainWindow::cleanupRecentFiles();
+	}
+	this->restoreGeometry(MainWindow::settings->value("geometry").toByteArray());
+}
+
+void MainWindow::writeSettings()
+{
+	if (MainWindow::settings) {
+		MainWindow::settings->setValue("geometry", this->saveGeometry());
+		MainWindow::settings->setValue("maxRecentFiles", MainWindow::maxRecentFiles);
+		MainWindow::settings->setValue("recentFiles", MainWindow::recentFiles);
+	}
+}
+
+void MainWindow::updateRecentFileActions()
+{
+	// A placeholder that we'll use again and again.
+	QAction *action;
+
+	// Clear the recentFileActions list:
+	while (!this->recentFileActions.isEmpty()) {
+		 action = this->recentFileActions.takeFirst();
+		 if (this->recentFileMenu)
+			 this->recentFileMenu->removeAction(action);
+		 delete action;
+	}
+
+	if (!(this->recentFileMenu)) {
+		this->recentFileMenu = new QMenu();
+		ui.actionOpenRecentFiles->setMenu(this->recentFileMenu);
+	}
+	
+	foreach (QString filename, MainWindow::recentFiles) {
+		action = new QAction(filename, this->recentFileMenu);
+		action->setData(QVariant(filename));
+		connect(action, SIGNAL(triggered()), this, SLOT(openRecentFile()));
+		this->recentFileActions.append(action);
+		this->recentFileMenu->addAction(action);
+	}
+
+	if (this->recentFileActions.isEmpty())
+		ui.actionOpenRecentFiles->setDisabled(true);
+	else
+		ui.actionOpenRecentFiles->setDisabled(false);
+}
+
+void MainWindow::addRecentFile(const QString& filename)
+{
+	if (!MainWindow::recentFiles.isEmpty()) {
+		if (MainWindow::recentFiles.contains(filename))
+			MainWindow::recentFiles.removeAll(filename);
+		while (MainWindow::recentFiles.size() >= MainWindow::maxRecentFiles)
+			MainWindow::recentFiles.removeLast();
+		MainWindow::cleanupRecentFiles();
+	}
+	MainWindow::recentFiles.prepend(filename);
+	foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+    if (MainWindow *win = qobject_cast<MainWindow *>(widget))
+			win->updateRecentFileActions();
+	}
+}
+
+void MainWindow::cleanupRecentFiles()
+{
+	QMutableStringListIterator i(MainWindow::recentFiles);
+	while (i.hasNext())
+		if (!QFile::exists(i.next())) i.remove();
 }
