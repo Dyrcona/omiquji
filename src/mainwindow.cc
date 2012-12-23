@@ -418,7 +418,7 @@ void MainWindow::addRecentFile(const QString& filename)
 	}
 	MainWindow::recentFiles.prepend(filename);
 	foreach (QWidget *widget, QApplication::topLevelWidgets()) {
-    if (MainWindow *win = qobject_cast<MainWindow *>(widget))
+		if (MainWindow *win = qobject_cast<MainWindow *>(widget))
 			win->updateRecentFileActions();
 	}
 }
