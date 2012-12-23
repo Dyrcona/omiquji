@@ -2,4 +2,7 @@
   <qresource>
     <file>images/gplv3.png</file>
   </qresource>
+  <qresource>
+    <file>images/omiquji.png</file>
+  </qresource>
 </RCC>

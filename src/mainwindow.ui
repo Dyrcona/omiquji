@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>omiquji</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../omiquji.qrc">
+    <normaloff>:/images/omiquji.png</normaloff>:/images/omiquji.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
@@ -263,6 +267,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../omiquji.qrc"/>
+ </resources>
  <connections/>
 </ui>
