@@ -79,6 +79,7 @@ private:
 	static QStringList recentFiles;
 	static void addRecentFile(const QString&);
 	static void cleanupRecentFiles();
+	static void updateMainWindows();
 }; 
 
 #endif

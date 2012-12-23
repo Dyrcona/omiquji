@@ -423,10 +423,7 @@ void MainWindow::clearRecentFiles()
 {
 	if (!MainWindow::recentFiles.isEmpty()) {
 		MainWindow::recentFiles.clear();
-		foreach (QWidget *widget, QApplication::topLevelWidgets()) {
-			if (MainWindow *win = qobject_cast<MainWindow *>(widget))
-				win->updateRecentFileActions();
-		}
+		MainWindow::updateMainWindows();
 	}
 }
 
@@ -440,10 +437,7 @@ void MainWindow::addRecentFile(const QString& filename)
 		MainWindow::cleanupRecentFiles();
 	}
 	MainWindow::recentFiles.prepend(filename);
-	foreach (QWidget *widget, QApplication::topLevelWidgets()) {
-		if (MainWindow *win = qobject_cast<MainWindow *>(widget))
-			win->updateRecentFileActions();
-	}
+	MainWindow::updateMainWindows();
 }
 
 void MainWindow::cleanupRecentFiles()
@@ -451,4 +445,12 @@ void MainWindow::cleanupRecentFiles()
 	QMutableStringListIterator i(MainWindow::recentFiles);
 	while (i.hasNext())
 		if (!QFile::exists(i.next())) i.remove();
+}
+
+void MainWindow::updateMainWindows()
+{
+	foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+		if (MainWindow *win = qobject_cast<MainWindow *>(widget))
+			win->updateRecentFileActions();
+	}
 }
