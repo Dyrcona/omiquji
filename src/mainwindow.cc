@@ -34,6 +34,11 @@ MainWindow::MainWindow(bool shouldUpdateActions) : QMainWindow()
 
 	recentFileMenu = 0;
 
+	separatorAction = new QAction(this);
+	separatorAction->setSeparator(true);
+	clearRecentFilesAction = new QAction(tr("Clear Recent Files"), this);
+	connect(clearRecentFilesAction, SIGNAL(triggered()), this, SLOT(clearRecentFiles()));
+
 	setCurrentFile("");
 
 	doc = 0;
@@ -392,6 +397,10 @@ void MainWindow::updateRecentFileActions()
 		this->recentFileMenu = new QMenu();
 		ui.actionOpenRecentFiles->setMenu(this->recentFileMenu);
 	}
+	else {
+		this->recentFileMenu->removeAction(this->separatorAction);
+		this->recentFileMenu->removeAction(this->clearRecentFilesAction);
+	}
 	
 	foreach (QString filename, MainWindow::recentFiles) {
 		action = new QAction(filename, this->recentFileMenu);
@@ -403,8 +412,22 @@ void MainWindow::updateRecentFileActions()
 
 	if (this->recentFileActions.isEmpty())
 		ui.actionOpenRecentFiles->setDisabled(true);
-	else
+	else {
+		this->recentFileMenu->addAction(this->separatorAction);
+		this->recentFileMenu->addAction(this->clearRecentFilesAction);
 		ui.actionOpenRecentFiles->setDisabled(false);
+	}
+}
+
+void MainWindow::clearRecentFiles()
+{
+	if (!MainWindow::recentFiles.isEmpty()) {
+		MainWindow::recentFiles.clear();
+		foreach (QWidget *widget, QApplication::topLevelWidgets()) {
+			if (MainWindow *win = qobject_cast<MainWindow *>(widget))
+				win->updateRecentFileActions();
+		}
+	}
 }
 
 void MainWindow::addRecentFile(const QString& filename)

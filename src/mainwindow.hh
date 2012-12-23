@@ -51,6 +51,7 @@ private slots:
 	bool saveAs();
 	void about();
 	void openRecentFile();
+	void clearRecentFiles();
 
 private:
 	bool okToContinue();
@@ -70,6 +71,8 @@ private:
 	QString currentFilename;
 	QMenu *recentFileMenu;
 	QList<QAction *> recentFileActions;
+	QAction *separatorAction;
+	QAction *clearRecentFilesAction;
 
 	static int maxRecentFiles;
 	static QSettings *settings;
