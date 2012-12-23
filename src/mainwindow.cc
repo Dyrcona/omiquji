@@ -24,7 +24,7 @@ int MainWindow::maxRecentFiles = 0;
 QSettings *MainWindow::settings = 0;
 QStringList MainWindow::recentFiles;
 
-MainWindow::MainWindow(bool shouldUpdateActions) : QMainWindow()
+MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(parent)
 {
 	ui.setupUi(this);
 

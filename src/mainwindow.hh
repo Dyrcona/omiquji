@@ -30,7 +30,7 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 public:
-	MainWindow(bool shouldUpdateActions = false);
+	MainWindow(bool shouldUpdateActions = false, QWidget *parent = 0);
 
 public slots:
 
