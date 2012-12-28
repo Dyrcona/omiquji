@@ -65,6 +65,8 @@ private:
 	void writeSettings();
 	void openFile(const QString&);
 	void updateRecentFileActions();
+	void createStatusBar();
+	void updateStatusBar();
 
 	Ui::MainWindow ui;
 	OmiDoc *doc;
@@ -73,6 +75,10 @@ private:
 	QList<QAction *> recentFileActions;
 	QAction *separatorAction;
 	QAction *clearRecentFilesAction;
+	QLabel *commentsLabel;
+	QLabel *fortunesLabel;
+	QLabel *commentCounter;
+	QLabel *fortuneCounter;
 
 	static int maxRecentFiles;
 	static QSettings *settings;

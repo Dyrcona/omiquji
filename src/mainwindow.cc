@@ -65,6 +65,8 @@ MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(
 	connect(ui.addFortuneButton, SIGNAL(clicked()), this, SLOT(addFortune()));
 	connect(ui.editFortuneButton, SIGNAL(clicked()), this, SLOT(editFortune()));
 	connect(ui.deleteFortuneButton, SIGNAL(clicked()), this, SLOT(deleteFortune()));
+
+	createStatusBar();
 }
 
 void MainWindow::addComment()
@@ -80,6 +82,7 @@ void MainWindow::addComment()
 		ui.commentList->addItem(text);
 		doc->addComment(text);
 		setWindowModified(true);
+		updateStatusBar();
 	}
 	disconnectEditMenu(&dlg);
 }
@@ -92,6 +95,7 @@ void MainWindow::deleteComment()
 	}
 	delete ui.commentList->currentItem();
 	setWindowModified(true);
+	updateStatusBar();
 }
 
 void MainWindow::editComment()
@@ -129,6 +133,7 @@ void MainWindow::addFortune()
 		ui.fortuneList->addItem(text);
 		doc->addFortune(text);
 		setWindowModified(true);
+		updateStatusBar();
 	}
 	disconnectEditMenu(&dlg);
 }
@@ -141,6 +146,7 @@ void MainWindow::deleteFortune()
 	}
 	delete ui.fortuneList->currentItem();
 	setWindowModified(true);
+	updateStatusBar();
 }
 
 void MainWindow::editFortune()
@@ -256,6 +262,7 @@ bool MainWindow::loadFile(const QString& filename)
 		}
 		file.close();
 	}
+	this->updateStatusBar();
 	return success;
 }
 
@@ -453,4 +460,28 @@ void MainWindow::updateMainWindows()
 		if (MainWindow *win = qobject_cast<MainWindow *>(widget))
 			win->updateRecentFileActions();
 	}
+}
+
+void MainWindow::createStatusBar()
+{
+	commentsLabel = new QLabel(tr("Comments"));
+	commentsLabel->setMinimumSize(commentsLabel->sizeHint());
+	fortunesLabel = new QLabel(tr("Fortunes"));
+	fortunesLabel->setMinimumSize(fortunesLabel->sizeHint());
+	commentCounter = new QLabel("0");
+	commentCounter->setLineWidth(2);
+	commentCounter->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	fortuneCounter = new QLabel("0");
+	fortuneCounter->setLineWidth(2);
+	fortuneCounter->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	this->statusBar()->addWidget(commentsLabel);
+	this->statusBar()->addWidget(commentCounter);
+	this->statusBar()->addWidget(fortunesLabel);
+	this->statusBar()->addWidget(fortuneCounter);
+}
+
+void MainWindow::updateStatusBar()
+{
+	commentCounter->setText(QString::number(ui.commentList->count()));
+	fortuneCounter->setText(QString::number(ui.fortuneList->count()));
 }
