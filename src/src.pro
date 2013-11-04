@@ -16,6 +16,7 @@
 # along with omiquji.  If not, see <http://www.gnu.org/licenses/>.
 TEMPLATE = app
 TARGET = omiquji
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 DESTDIR=../
 
