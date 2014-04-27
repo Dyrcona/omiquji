@@ -191,7 +191,7 @@ int OmiDoc::writeToStream(QDataStream& stream)
 	return bytesOut;
 }
 
-OmiDoc* OmiDoc::newFromRawData(char* data, int len)
+OmiDoc* OmiDoc::newFromRawData(char* data, unsigned int len)
 {
 	OmiDoc *doc = 0;
 

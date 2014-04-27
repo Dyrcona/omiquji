@@ -41,7 +41,7 @@ public:
 	const QString& fortuneAt(int) const;
 	int writeToStream(QDataStream&);
 
-	static OmiDoc* newFromRawData(char*,int);
+	static OmiDoc* newFromRawData(char*, unsigned int);
 
 private:
 	QStringList *commentList;
