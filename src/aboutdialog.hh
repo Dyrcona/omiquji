@@ -24,16 +24,16 @@
 
 class AboutDialog : public QDialog
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	AboutDialog(QWidget *parent=0);
+  AboutDialog(QWidget *parent=0);
 
 private slots:
-	void gplButtonClicked();
+  void gplButtonClicked();
 
 private:
-	Ui::AboutDialog ui;
+  Ui::AboutDialog ui;
 };
 
 #endif

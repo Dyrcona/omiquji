@@ -24,22 +24,22 @@
 
 class EditDialog : public QDialog
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	EditDialog(QWidget *parent=0);
+  EditDialog(QWidget *parent=0);
 
-	QString textValue();
-	void setTextValue(const QString&);
-	void connectCutAction(QAction*);
-	void connectCopyAction(QAction*);
-	void connectPasteAction(QAction*);
-	void disconnectCutAction(QAction*);
-	void disconnectCopyAction(QAction*);
-	void disconnectPasteAction(QAction*);
+  QString textValue();
+  void setTextValue(const QString&);
+  void connectCutAction(QAction*);
+  void connectCopyAction(QAction*);
+  void connectPasteAction(QAction*);
+  void disconnectCutAction(QAction*);
+  void disconnectCopyAction(QAction*);
+  void disconnectPasteAction(QAction*);
 
 private:
-	Ui::EditDialog ui;
+  Ui::EditDialog ui;
 };
 
 #endif

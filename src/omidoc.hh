@@ -25,27 +25,27 @@
 class OmiDoc
 {
 public:
-	OmiDoc();
-	~OmiDoc();
-	void addComment(const QString&);
-	const QString& commentAt(int);
-	void removeCommentAt(int);
-	void replaceCommentAt(int, const QString&);
-	void addFortune(const QString&);
-	const QString& fortuneAt(int);
-	void removeFortuneAt(int);
-	void replaceFortuneAt(int, const QString&);
-	int commentCount();
-	int fortuneCount();
-	const QString& commentAt(int) const;
-	const QString& fortuneAt(int) const;
-	int writeToStream(QDataStream&);
+  OmiDoc();
+  ~OmiDoc();
+  void addComment(const QString&);
+  const QString& commentAt(int);
+  void removeCommentAt(int);
+  void replaceCommentAt(int, const QString&);
+  void addFortune(const QString&);
+  const QString& fortuneAt(int);
+  void removeFortuneAt(int);
+  void replaceFortuneAt(int, const QString&);
+  int commentCount();
+  int fortuneCount();
+  const QString& commentAt(int) const;
+  const QString& fortuneAt(int) const;
+  int writeToStream(QDataStream&);
 
-	static OmiDoc* newFromRawData(char*, unsigned int);
+  static OmiDoc* newFromRawData(char*, unsigned int);
 
 private:
-	QStringList *commentList;
-	QStringList *fortuneList;
+  QStringList *commentList;
+  QStringList *fortuneList;
 };
 
 #endif

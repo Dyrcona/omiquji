@@ -33,65 +33,65 @@ class EditDialog;
 
 class MainWindow : public QMainWindow
 {
-	Q_OBJECT
+  Q_OBJECT
 
 public:
-	MainWindow(bool shouldUpdateActions = false, QWidget *parent = 0);
+  MainWindow(bool shouldUpdateActions = false, QWidget *parent = 0);
 
 public slots:
 
 protected:
-	void closeEvent(QCloseEvent*);
+  void closeEvent(QCloseEvent*);
 
 private slots:
-	void addComment();
-	void editComment();
-	void deleteComment();
-	void addFortune();
-	void editFortune();
-	void deleteFortune();
-	// Action methods:
-	void newFile();
-	void open();
-	bool save();
-	bool saveAs();
-	void about();
-	void openRecentFile();
-	void clearRecentFiles();
+  void addComment();
+  void editComment();
+  void deleteComment();
+  void addFortune();
+  void editFortune();
+  void deleteFortune();
+  // Action methods:
+  void newFile();
+  void open();
+  bool save();
+  bool saveAs();
+  void about();
+  void openRecentFile();
+  void clearRecentFiles();
 
 private:
-	bool okToContinue();
-	bool checkDocForSave();
-	bool loadFile(const QString&);
-	bool saveFile(const QString&);
-	void setCurrentFile(const QString&);
-	void connectEditMenu(EditDialog*);
-	void disconnectEditMenu(EditDialog *dialog=0);
-	void readSettings();
-	void writeSettings();
-	void openFile(const QString&);
-	void updateRecentFileActions();
-	void createStatusBar();
-	void updateStatusBar();
+  bool okToContinue();
+  bool checkDocForSave();
+  bool loadFile(const QString&);
+  bool saveFile(const QString&);
+  void setCurrentFile(const QString&);
+  void connectEditMenu(EditDialog*);
+  void disconnectEditMenu(EditDialog *dialog=0);
+  void readSettings();
+  void writeSettings();
+  void openFile(const QString&);
+  void updateRecentFileActions();
+  void createStatusBar();
+  void updateStatusBar();
 
-	Ui::MainWindow ui;
-	OmiDoc *doc;
-	QString currentFilename;
-	QMenu *recentFileMenu;
-	QList<QAction *> recentFileActions;
-	QAction *separatorAction;
-	QAction *clearRecentFilesAction;
-	QLabel *commentsLabel;
-	QLabel *fortunesLabel;
-	QLabel *commentCounter;
-	QLabel *fortuneCounter;
+  Ui::MainWindow ui;
+  OmiDoc *doc;
+  QString currentFilename;
+  QMenu *recentFileMenu;
+  QList<QAction *> recentFileActions;
+  QAction *separatorAction;
+  QAction *clearRecentFilesAction;
+  QLabel *commentsLabel;
+  QLabel *fortunesLabel;
+  QLabel *commentCounter;
+  QLabel *fortuneCounter;
 
-	static int maxRecentFiles;
-	static QSettings *settings;
-	static QStringList recentFiles;
-	static void addRecentFile(const QString&);
-	static void cleanupRecentFiles();
-	static void updateMainWindows();
+  static int maxRecentFiles;
+  static QSettings *settings;
+  static QStringList recentFiles;
+  static void addRecentFile(const QString&);
+  static void cleanupRecentFiles();
+  static void updateMainWindows();
 }; 
 
 #endif
