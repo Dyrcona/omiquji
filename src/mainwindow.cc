@@ -65,7 +65,7 @@ MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(
   connect(ui.addFortuneButton, SIGNAL(clicked()), this, SLOT(addFortune()));
   connect(ui.editFortuneButton, SIGNAL(clicked()), this, SLOT(editFortune()));
   connect(ui.deleteFortuneButton, SIGNAL(clicked()), this, SLOT(deleteFortune()));
-  
+
   // Apparently, this is needed to make the shortcuts work with
   // appmenu-qt5 on Ubuntu. See:
   // https://bugs.launchpad.net/ubuntu/+source/appmenu-qt5/+bug/1313248
