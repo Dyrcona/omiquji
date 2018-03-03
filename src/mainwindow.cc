@@ -69,14 +69,14 @@ MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(
   // Apparently, this is needed to make the shortcuts work with
   // appmenu-qt5 on Ubuntu. See:
   // https://bugs.launchpad.net/ubuntu/+source/appmenu-qt5/+bug/1313248
-  this->addAction(ui.action_New);
-  this->addAction(ui.action_Open);
-  this->addAction(ui.action_Save);
-  this->addAction(ui.actionSave_As);
-  this->addAction(ui.action_Close);
-  this->addAction(ui.action_Quit);
-  this->addAction(ui.action_About);
-  this->addAction(ui.actionAbout_Qt);
+  // this->addAction(ui.action_New);
+  // this->addAction(ui.action_Open);
+  // this->addAction(ui.action_Save);
+  // this->addAction(ui.actionSave_As);
+  // this->addAction(ui.action_Close);
+  // this->addAction(ui.action_Quit);
+  // this->addAction(ui.action_About);
+  // this->addAction(ui.actionAbout_Qt);
 
   createStatusBar();
 }
