@@ -66,6 +66,10 @@ MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(
   connect(ui.editFortuneButton, SIGNAL(clicked()), this, SLOT(editFortune()));
   connect(ui.deleteFortuneButton, SIGNAL(clicked()), this, SLOT(deleteFortune()));
 
+  // Wire QListWidgets up for double click to edit.
+  connect(ui.commentList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(editComment()));
+  connect(ui.fortuneList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(editFortune()));
+
   createStatusBar();
 }
 
