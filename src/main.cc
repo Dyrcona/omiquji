@@ -25,6 +25,7 @@ int main(int argc, char **argv)
   QCoreApplication::setOrganizationName("Sigio.com");
   QCoreApplication::setOrganizationDomain("sigio.com");
   QCoreApplication::setApplicationName("omiquji");
+  QCoreApplication::setApplicationVersion("0.1.0");
   MainWindow *window = new MainWindow(true);
   window->show();
   return app.exec();
