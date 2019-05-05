@@ -17,6 +17,7 @@
  * along with omiquji.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "editdialog.hh"
+#include <QAction>
 
 EditDialog::EditDialog(QWidget *parent) : QDialog(parent)
 {
