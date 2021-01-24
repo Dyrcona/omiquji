@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Jason J.A. Stephenson <jason@sigio.com>
+ * Copyright © 2012, 2021 Jason J.A. Stephenson <jason@sigio.com>
  *
  * This file is part of omiquji.
  *
@@ -39,6 +39,7 @@ const char *omikuji_signature = "omikuji";
 
 bool checkOmikujiHeader(const OmikujiHeader header);
 TableEntry *copyTableEntry(TableEntry *entry, char *data, quint32 offset);
+int writeStringListToStrfileStream(QDataStream &stream, QStringList *list, const char *separator,bool &wantSeparator);
 
 OmiDoc::OmiDoc()
 {
@@ -191,6 +192,20 @@ int OmiDoc::writeToStream(QDataStream& stream)
   return bytesOut;
 }
 
+int OmiDoc::writeStrfileToStream(QDataStream &stream)
+{
+  int bytesOut = 0;
+  bool wantSeparator = false;
+  const char *separator = "%\n";
+
+  if (commentList->count())
+    bytesOut += writeStringListToStrfileStream(stream, commentList, separator, wantSeparator);
+  if (fortuneList->count())
+    bytesOut += writeStringListToStrfileStream(stream, fortuneList, separator, wantSeparator);
+
+  return bytesOut;
+}
+
 OmiDoc* OmiDoc::newFromRawData(char* data, unsigned int len)
 {
   OmiDoc *doc = 0;
@@ -283,4 +298,25 @@ TableEntry *copyTableEntry(TableEntry *entry, char *data, quint32 offset)
   entry->offset = qFromBigEndian(entry->offset);
   entry->length = qFromBigEndian(entry->length);
   return entry;
+}
+
+int writeStringListToStrfileStream(QDataStream &stream, QStringList *list, const char *separator, bool &wantSeparator) {
+  int bytesOut = 0;
+
+  quint32 entries = list->count();
+  if (entries) {
+    for (quint32 i = 0; i < entries; i++) {
+      QString string = list->at(i);
+      QByteArray entry = string.toUtf8();
+      if (entry.size() > 0) {
+        if (wantSeparator)
+          bytesOut += stream.writeRawData(separator, std::strlen(separator));
+        bytesOut += stream.writeRawData(entry.data(), entry.size());
+        if (!string.endsWith("\n"))
+          bytesOut += stream.writeRawData("\n", 1);
+        wantSeparator = true;
+      }
+    }
+  }
+  return bytesOut;
 }

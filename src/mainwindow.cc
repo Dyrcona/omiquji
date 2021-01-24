@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Jason J.A. Stephenson <jason@sigio.com>
+ * Copyright © 2012, 2021 Jason J.A. Stephenson <jason@sigio.com>
  *
  * This file is part of omiquji.
  *
@@ -220,9 +220,11 @@ bool MainWindow::saveFile(const QString& filename)
   bool success = file.open(QIODevice::WriteOnly | QIODevice::Truncate);
   if (success) {
     QDataStream out(&file);
-    if (!doc->writeToStream(out))
-      success = false;
+    if (filename.endsWith(".omi"))
+      success = (doc->writeToStream(out) > 0) ? true : false;
     else
+      success = (doc->writeStrfileToStream(out) > 0) ? true : false;
+    if (success)
       setCurrentFile(filename);
     file.close();
   }
@@ -322,7 +324,7 @@ bool MainWindow::saveAs()
   if (checkDocForSave()) {
     QString filename =
       QFileDialog::getSaveFileName(this, tr("Save Omifile"), ".",
-        tr("Omifiles (*.omi)"));
+        tr("Omifile (*.omi);;Strfile (*)"));
     if (!filename.isEmpty()) {
       bool result = saveFile(filename);
       if (result)

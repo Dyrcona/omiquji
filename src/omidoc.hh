@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Jason J.A. Stephenson <jason@sigio.com>
+ * Copyright © 2012, 2021 Jason J.A. Stephenson <jason@sigio.com>
  *
  * This file is part of omiquji.
  *
@@ -40,6 +40,7 @@ public:
   const QString& commentAt(int) const;
   const QString& fortuneAt(int) const;
   int writeToStream(QDataStream&);
+  int writeStrfileToStream(QDataStream&);
 
   static OmiDoc* newFromRawData(char*, unsigned int);
 
