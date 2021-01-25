@@ -236,36 +236,19 @@ bool MainWindow::loadFile(const QString& filename)
   QFile file(filename);
   bool success = file.open(QIODevice::ReadOnly);
   if (success) {
-    char *buf = 0;
-    qint64 size = file.size();
-    if (size) {
-      buf = new char[size];
-      if (buf) {
-        QDataStream in(&file);
-        if (in.readRawData(buf, size)) {
-          doc = OmiDoc::newFromRawData(buf, size);
-          if (doc) {
-            int count = doc->commentCount();
-            int i;
-            for (i = 0; i < count; i++)
-              ui.commentList->addItem(doc->commentAt(i));
-            count = doc->fortuneCount();
-            for (i = 0; i < count; i++)
-              ui.fortuneList->addItem(doc->fortuneAt(i));
-            setCurrentFile(filename);
-          }
-          else
-            success = false;
-        } else {
-          success = false;
-        }
-        delete buf;
-      } else {
-        success = false;
-      }
-    } else {
-      success = false;
+    doc = OmiDoc::newFromFile(file);
+    if (doc) {
+      int count = doc->commentCount();
+      int i;
+      for (i = 0; i < count; i++)
+        ui.commentList->addItem(doc->commentAt(i));
+      count = doc->fortuneCount();
+      for (i = 0; i < count; i++)
+        ui.fortuneList->addItem(doc->fortuneAt(i));
+      setCurrentFile(filename);
     }
+    else
+      success = false;
     file.close();
   }
   this->updateStatusBar();
@@ -282,7 +265,7 @@ void MainWindow::open()
 {
   QString filename =
     QFileDialog::getOpenFileName(this, tr("Open Omifile"), ".",
-      tr("Omifiles (*.omi)"));
+      tr("Omifiles (*.omi);;Strfile (*)"));
   if (!filename.isEmpty())
     this->openFile(filename);
 }

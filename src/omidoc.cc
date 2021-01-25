@@ -37,6 +37,8 @@ struct OmikujiHeader {
 const char omikuji_version = 0;
 const char *omikuji_signature = "omikuji";
 
+OmiDoc* readFromOmifile(QFile &file);
+OmiDoc* readFromStrfile(QFile &file);
 bool checkOmikujiHeader(const OmikujiHeader header);
 TableEntry *copyTableEntry(TableEntry *entry, char *data, quint32 offset);
 int writeStringListToStrfileStream(QDataStream &stream, QStringList *list, const char *separator,bool &wantSeparator);
@@ -206,9 +208,37 @@ int OmiDoc::writeStrfileToStream(QDataStream &stream)
   return bytesOut;
 }
 
-OmiDoc* OmiDoc::newFromRawData(char* data, unsigned int len)
+OmiDoc* OmiDoc::newFromFile(QFile &input) {
+  OmiDoc *doc = 0;
+  bool wantClose = false;
+  if (input.isReadable()) {
+    if (!input.isOpen()) {
+      if (input.open(QIODevice::ReadOnly))
+        wantClose = true;
+      else
+        return doc;
+    }
+    if (input.fileName().endsWith(".omi")) {
+      doc = readFromOmifile(input);
+    } else {
+      doc = readFromStrfile(input);
+    }
+  }
+  if (wantClose) input.close();
+  return doc;
+}
+
+OmiDoc* readFromOmifile(QFile &file)
 {
   OmiDoc *doc = 0;
+  qint64 len = file.size();
+  char *data = new char[len];
+  if (!data) return doc;
+  len = file.read(data, len);
+  if (len < file.size()) {
+    delete data;
+    return doc;
+  }
 
   // Currently only support creation from omifiles, so check for the
   // header.
@@ -271,6 +301,44 @@ OmiDoc* OmiDoc::newFromRawData(char* data, unsigned int len)
     }
   }
 
+  if (data) delete data;
+
+  return doc;
+}
+
+OmiDoc* readFromStrfile(QFile &file) {
+  OmiDoc *doc = 0;
+  qint64 size = file.size();
+  if (size > 0) {
+    char *data = new char[size + 1];
+    if (!data) return doc;
+    qint64 length = file.read(data, size);
+    if (length < size) {
+      delete data;
+      return doc;
+    }
+    else {
+      data[length] = 0;
+      doc = new OmiDoc();
+      char *start = data;
+      while (true) {
+        char *next = std::strstr(start, "%\n");
+        if (next) {
+          length = next - start;
+          QString str = QString::fromUtf8(start, length);
+          doc->addFortune(str);
+          start = next + 2;
+          if (start >= (data + size)) break;
+        } else {
+          length = std::strlen(start);
+          QString str = QString::fromUtf8(start, length);
+          doc->addFortune(str);
+          break;
+        }
+      }
+      delete data;
+    }
+  }
   return doc;
 }
 

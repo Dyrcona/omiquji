@@ -21,6 +21,7 @@
 
 #include <QStringList>
 #include <QDataStream>
+#include <QFile>
 
 class OmiDoc
 {
@@ -42,7 +43,7 @@ public:
   int writeToStream(QDataStream&);
   int writeStrfileToStream(QDataStream&);
 
-  static OmiDoc* newFromRawData(char*, unsigned int);
+  static OmiDoc* newFromFile(QFile &input);
 
 private:
   QStringList *commentList;
