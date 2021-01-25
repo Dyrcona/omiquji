@@ -41,7 +41,7 @@ OmiDoc* readFromOmifile(QFile &file);
 OmiDoc* readFromStrfile(QFile &file);
 bool checkOmikujiHeader(const OmikujiHeader header);
 TableEntry *copyTableEntry(TableEntry *entry, char *data, quint32 offset);
-int writeStringListToStrfileStream(QDataStream &stream, QStringList *list, const char *separator,bool &wantSeparator);
+int writeStringListToStrfileStream(QDataStream &stream, QStringList *list, const char *separator, bool &wantSeparator);
 
 OmiDoc::OmiDoc()
 {
@@ -325,14 +325,18 @@ OmiDoc* readFromStrfile(QFile &file) {
         char *next = std::strstr(start, "%\n");
         if (next) {
           length = next - start;
-          QString str = QString::fromUtf8(start, length);
-          doc->addFortune(str);
+          if (length > 0) {
+            QString str = QString::fromUtf8(start, length);
+            doc->addFortune(str);
+          }
           start = next + 2;
           if (start >= (data + size)) break;
         } else {
           length = std::strlen(start);
-          QString str = QString::fromUtf8(start, length);
-          doc->addFortune(str);
+          if (length > 0) {
+            QString str = QString::fromUtf8(start, length);
+            doc->addFortune(str);
+          }
           break;
         }
       }
