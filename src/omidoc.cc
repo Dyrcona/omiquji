@@ -242,7 +242,7 @@ OmiDoc* readFromOmifile(QFile &file)
 
   // Currently only support creation from omifiles, so check for the
   // header.
-  if (len >= sizeof(OmikujiHeader)) {
+  if (static_cast<unsigned long>(len) >= sizeof(OmikujiHeader)) {
     // Minimum size of an omikuji file is 24 bytes for the header.
     OmikujiHeader header;
     std::memcpy(&header, data, sizeof(OmikujiHeader));
@@ -266,10 +266,10 @@ OmiDoc* readFromOmifile(QFile &file)
         TableEntry entry;
         for (quint32 i = 0; i < header.commentHeader.length; i++) {
           if (offset >= sizeof(OmikujiHeader) &&
-            offset + sizeof(TableEntry) <= len) {
+              offset + sizeof(TableEntry) <= static_cast<unsigned long>(len)) {
             copyTableEntry(&entry, data, offset);
             if (entry.offset >= sizeof(OmikujiHeader)
-              && entry.offset + entry.length <= len) {
+                && entry.offset + entry.length <= static_cast<unsigned long>(len)) {
               QString str = QString::fromUtf8((data + entry.offset),
                 entry.length);
               doc->addComment(str);
@@ -285,7 +285,7 @@ OmiDoc* readFromOmifile(QFile &file)
         TableEntry entry;
         for (quint32 i = 0; i < header.fortuneHeader.length; i++) {
           if (offset >= sizeof(OmikujiHeader)
-            && offset + sizeof(TableEntry) <= len) {
+              && offset + sizeof(TableEntry) <= static_cast<unsigned long>(len)) {
             copyTableEntry(&entry, data, offset);
             if (entry.offset >= sizeof(OmikujiHeader)
               && entry.offset + entry.length <= len) {
