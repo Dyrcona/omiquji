@@ -158,7 +158,6 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="separator"/>
     <addaction name="action_New"/>
     <addaction name="action_Open"/>
     <addaction name="actionOpenRecentFiles"/>
@@ -182,6 +181,8 @@
     <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
+    <addaction name="separator"/>
+    <addaction name="action_Find"/>
    </widget>
    <widget class="QMenu" name="menuSeparator">
     <property name="enabled">
@@ -288,6 +289,14 @@
    </property>
    <property name="toolTip">
     <string>Open Recent Files</string>
+   </property>
+  </action>
+  <action name="action_Find">
+   <property name="text">
+    <string>&amp;Find...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>

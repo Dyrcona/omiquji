@@ -21,6 +21,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 DESTDIR=../
 
 RESOURCES = ../omiquji.qrc
-SOURCES += main.cc mainwindow.cc editdialog.cc omidoc.cc aboutdialog.cc
-HEADERS += mainwindow.hh editdialog.hh omidoc.hh aboutdialog.hh
-FORMS   += mainwindow.ui editdialog.ui aboutdialog.ui
+SOURCES += main.cc mainwindow.cc editdialog.cc omidoc.cc aboutdialog.cc \
+    finddialog.cc
+HEADERS += mainwindow.hh editdialog.hh omidoc.hh aboutdialog.hh \
+    finddialog.hh
+FORMS   += mainwindow.ui editdialog.ui aboutdialog.ui \
+    finddialog.ui

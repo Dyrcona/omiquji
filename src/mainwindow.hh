@@ -58,6 +58,7 @@ private slots:
   void about();
   void openRecentFile();
   void clearRecentFiles();
+  void find();
 
 private:
   bool okToContinue();
@@ -85,6 +86,7 @@ private:
   QLabel *fortunesLabel;
   QLabel *commentCounter;
   QLabel *fortuneCounter;
+  QDialog *findDialog;
 
   static int maxRecentFiles;
   static QSettings *settings;

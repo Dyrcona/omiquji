@@ -5,6 +5,7 @@ omiquji.pro.user
 src/Makefile
 src/aboutdialog.o
 src/editdialog.o
+src/finddialog.o
 src/main.o
 src/mainwindow.o
 src/moc_mainwindow.cpp
@@ -20,3 +21,6 @@ src/qrc_omiquji.cpp
 src/qrc_omiquji.o
 src/moc_editdialog.cpp
 src/moc_editdialog.o
+src/moc_finddialog.cpp
+src/moc_finddialog.o
+src/ui_finddialog.h

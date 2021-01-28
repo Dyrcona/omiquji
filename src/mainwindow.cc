@@ -19,6 +19,7 @@
 #include "mainwindow.hh"
 #include "editdialog.hh"
 #include "aboutdialog.hh"
+#include "finddialog.hh"
 
 int MainWindow::maxRecentFiles = 0;
 QSettings *MainWindow::settings = 0;
@@ -57,6 +58,7 @@ MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(
   connect(ui.action_Quit, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
   connect(ui.action_About, SIGNAL(triggered()), this, SLOT(about()));
   connect(ui.actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+  connect(ui.action_Find, SIGNAL(triggered()), this, SLOT(find()));
 
   // Action buttons.
   connect(ui.addCommentButton, SIGNAL(clicked()), this, SLOT(addComment()));
@@ -173,6 +175,16 @@ void MainWindow::editFortune()
     setWindowModified(true);
   }
   disconnectEditMenu(&dlg);
+}
+
+void MainWindow::find()
+{
+  if (!findDialog) {
+    findDialog = new FindDialog(this);
+  }
+  findDialog->show();
+  findDialog->raise();
+  findDialog->activateWindow();
 }
 
 void MainWindow::setCurrentFile(const QString& filename)
