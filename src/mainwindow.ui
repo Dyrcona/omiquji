@@ -79,6 +79,13 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="QPushButton" name="searchCommentButton">
+           <property name="text">
+            <string>Search</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -138,6 +145,13 @@
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="QPushButton" name="searchFortuneButton">
+           <property name="text">
+            <string>Search</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -178,11 +192,18 @@
     <property name="title">
      <string>&amp;Edit</string>
     </property>
+    <widget class="QMenu" name="menuFind">
+     <property name="title">
+      <string>Find</string>
+     </property>
+     <addaction name="actionSearch_in_Comments"/>
+     <addaction name="actionSearch_in_Fortunes"/>
+    </widget>
     <addaction name="actionCut"/>
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="separator"/>
-    <addaction name="action_Find"/>
+    <addaction name="menuFind"/>
    </widget>
    <widget class="QMenu" name="menuSeparator">
     <property name="enabled">
@@ -291,9 +312,17 @@
     <string>Open Recent Files</string>
    </property>
   </action>
-  <action name="action_Find">
+  <action name="actionSearch_in_Comments">
    <property name="text">
-    <string>&amp;Find...</string>
+    <string>Search in Co&amp;mments</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="actionSearch_in_Fortunes">
+   <property name="text">
+    <string>Search in &amp;Fortunes</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>

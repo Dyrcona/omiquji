@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012 Jason J.A. Stephenson <jason@sigio.com>
+ * Copyright © 2012, 2021 Jason J.A. Stephenson <jason@sigio.com>
  *
  * This file is part of omiquji.
  *
@@ -28,8 +28,9 @@
 
 #include "ui_mainwindow.h"
 #include "omidoc.hh"
-
 class EditDialog;
+class FindDialog;
+struct FindOptions;
 
 class MainWindow : public QMainWindow
 {
@@ -58,7 +59,10 @@ private slots:
   void about();
   void openRecentFile();
   void clearRecentFiles();
-  void find();
+  void searchComments();
+  void searchFortunes();
+  void findNextInComments(FindOptions*);
+  void findNextInFortunes(FindOptions*);
 
 private:
   bool okToContinue();
@@ -74,6 +78,8 @@ private:
   void updateRecentFileActions();
   void createStatusBar();
   void updateStatusBar();
+  bool setupSearch(QListWidget*);
+  void findNext(QListWidget*, FindOptions*);
 
   Ui::MainWindow ui;
   OmiDoc *doc;
@@ -86,7 +92,9 @@ private:
   QLabel *fortunesLabel;
   QLabel *commentCounter;
   QLabel *fortuneCounter;
-  QDialog *findDialog;
+  FindDialog *findDialog;
+  bool isNewSearch;
+  int searchIndex;
 
   static int maxRecentFiles;
   static QSettings *settings;

@@ -44,6 +44,10 @@ MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(
 
   doc = 0;
 
+  findDialog = nullptr;
+  isNewSearch = true;
+  searchIndex = 0;
+
   disconnectEditMenu();
 
   if (shouldUpdateActions)
@@ -58,7 +62,8 @@ MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(
   connect(ui.action_Quit, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
   connect(ui.action_About, SIGNAL(triggered()), this, SLOT(about()));
   connect(ui.actionAbout_Qt, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-  connect(ui.action_Find, SIGNAL(triggered()), this, SLOT(find()));
+  connect(ui.actionSearch_in_Comments, SIGNAL(triggered()), this, SLOT(searchComments()));
+  connect(ui.actionSearch_in_Fortunes, SIGNAL(triggered()), this, SLOT(searchFortunes()));
 
   // Action buttons.
   connect(ui.addCommentButton, SIGNAL(clicked()), this, SLOT(addComment()));
@@ -67,6 +72,8 @@ MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(
   connect(ui.addFortuneButton, SIGNAL(clicked()), this, SLOT(addFortune()));
   connect(ui.editFortuneButton, SIGNAL(clicked()), this, SLOT(editFortune()));
   connect(ui.deleteFortuneButton, SIGNAL(clicked()), this, SLOT(deleteFortune()));
+  connect(ui.searchCommentButton, SIGNAL(clicked()), this, SLOT(searchComments()));
+  connect(ui.searchFortuneButton, SIGNAL(clicked()), this, SLOT(searchFortunes()));
 
   // Wire QListWidgets up for double click to edit.
   connect(ui.commentList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(editComment()));
@@ -95,7 +102,7 @@ void MainWindow::addComment()
 
 void MainWindow::deleteComment()
 {
-  if (doc) {	
+  if (doc) {
     int idx = ui.commentList->currentRow();
     doc->removeCommentAt(idx);
   }
@@ -177,14 +184,92 @@ void MainWindow::editFortune()
   disconnectEditMenu(&dlg);
 }
 
-void MainWindow::find()
-{
-  if (!findDialog) {
-    findDialog = new FindDialog(this);
+void MainWindow::searchComments() {
+  if (setupSearch(ui.commentList)) {
+    connect(findDialog, &FindDialog::findNext, this, &MainWindow::findNextInComments);
+  } else {
+    QMessageBox::warning(this, "omiquji", tr("There are no comments to search."),
+                         QMessageBox::Cancel);
   }
-  findDialog->show();
-  findDialog->raise();
-  findDialog->activateWindow();
+}
+
+void MainWindow::searchFortunes() {
+  if (setupSearch(ui.fortuneList)) {
+    connect(findDialog, &FindDialog::findNext, this, &MainWindow::findNextInFortunes);
+  } else {
+    QMessageBox::warning(this, "omiquji", tr("There are no fortunes to search."),
+                         QMessageBox::Cancel);
+  }
+}
+
+void MainWindow::findNextInComments(FindOptions *findOpts) {
+  findNext(ui.commentList, findOpts);
+}
+
+void MainWindow::findNextInFortunes(FindOptions *findOpts) {
+  findNext(ui.fortuneList, findOpts);
+}
+
+bool MainWindow::setupSearch(QListWidget* target) {
+  if (target->count() > 0) {
+    if (!findDialog) {
+      findDialog = new FindDialog(this);
+    }
+    findDialog->show();
+    findDialog->raise();
+    findDialog->activateWindow();
+    isNewSearch = true;
+    return true;
+  }
+  return false;
+}
+
+void MainWindow::findNext(QListWidget* target, FindOptions *findOpts) {
+  int step = (findOpts->reverse) ? -1 : 1;
+  int bound = (findOpts->reverse) ? -1 : target->count();
+  bool found = false;
+  QRegularExpression re; // In case we need it.
+
+  if (isNewSearch) {
+    isNewSearch = false;
+    if (findOpts->fromStart)
+      searchIndex = (findOpts->reverse) ? target->count() - 1 : 0;
+    else
+      searchIndex = (target->currentItem()) ? target->currentRow() : 0;
+  } else {
+    searchIndex += step;
+    if (searchIndex < 0 || searchIndex >= target->count()) {
+      // Start over
+      if (findOpts->reverse)
+        searchIndex = target->count() - 1;
+      else
+        searchIndex = 0;
+    }
+  }
+
+  if (findOpts->matchWholeWords)
+    re.setPattern("\\W" + findOpts->searchTerm + "\\W");
+  else if (findOpts->isRegexp)
+    re.setPattern(findOpts->searchTerm);
+
+  if (findOpts->matchWholeWords || findOpts->isRegexp) {
+    if (!findOpts->matchCase)
+      re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+  }
+
+  while (searchIndex != bound && !found) {
+    QString entry = target->item(searchIndex)->text();
+    if (findOpts->matchWholeWords || findOpts->isRegexp)
+      found = entry.contains(re);
+    else
+      found = entry.contains(findOpts->searchTerm, (findOpts->matchCase) ? Qt::CaseSensitive : Qt::CaseInsensitive);
+    if (found)
+      target->setCurrentRow(searchIndex, QItemSelectionModel::SelectCurrent);
+    else
+      searchIndex += step;
+  }
+  if (searchIndex == bound)
+    QMessageBox::information(this, tr("Not Found"), tr("Search key not found."));
 }
 
 void MainWindow::setCurrentFile(const QString& filename)
@@ -409,7 +494,7 @@ void MainWindow::updateRecentFileActions()
     this->recentFileMenu->removeAction(this->separatorAction);
     this->recentFileMenu->removeAction(this->clearRecentFilesAction);
   }
-  
+
   foreach (QString filename, MainWindow::recentFiles) {
     action = new QAction(filename, this->recentFileMenu);
     action->setData(QVariant(filename));

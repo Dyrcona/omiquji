@@ -140,5 +140,24 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>findButton</sender>
+   <signal>clicked()</signal>
+   <receiver>FindDialog</receiver>
+   <slot>findClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>385</x>
+     <y>24</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>406</x>
+     <y>64</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
+ <slots>
+  <slot>findClicked()</slot>
+ </slots>
 </ui>

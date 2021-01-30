@@ -20,6 +20,17 @@
 #define FINDDIALOG_HH
 
 #include <QDialog>
+#include <QString>
+
+struct FindOptions
+{
+  QString searchTerm;
+  bool fromStart;
+  bool matchCase;
+  bool matchWholeWords;
+  bool isRegexp;
+  bool reverse;
+};
 
 namespace Ui {
 class FindDialog;
@@ -33,8 +44,18 @@ public:
   explicit FindDialog(QWidget *parent = nullptr);
   ~FindDialog();
 
+public slots:
+  void findClicked();
+
+signals:
+  void findNext(FindOptions*);
+
+protected:
+  void closeEvent(QCloseEvent*);
+
 private:
   Ui::FindDialog *ui;
+  FindOptions *findOpts;
 };
 
 #endif // FINDDIALOG_HH
