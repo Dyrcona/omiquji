@@ -1,4 +1,4 @@
-# Copyright © 2012 Jason J.A. Stephenson <jason@sigio.com>
+# Copyright © 2012, 2021 Jason J.A. Stephenson <jason@sigio.com>
 
 # This file is part of omiquji.
 
@@ -16,7 +16,7 @@
 # along with omiquji.  If not, see <http://www.gnu.org/licenses/>.
 TEMPLATE = app
 TARGET = omiquji
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += widgets
 
 DESTDIR=../
 
