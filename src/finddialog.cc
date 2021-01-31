@@ -39,6 +39,7 @@ void FindDialog::findClicked()
 {
   if (ui->lineEdit->text().length() == 0) {
     ui->lineEdit->setFocus(Qt::OtherFocusReason);
+    QApplication::beep();
     // TODO: "Flash" the widget background so it is obvious what is going on.
   } else {
     findOpts->searchTerm = ui->lineEdit->text();
