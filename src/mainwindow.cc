@@ -102,6 +102,9 @@ void MainWindow::addComment()
 
 void MainWindow::deleteComment()
 {
+  if (!ui.commentList->currentItem())
+    return;
+  
   if (doc) {
     int idx = ui.commentList->currentRow();
     doc->removeCommentAt(idx);
@@ -153,6 +156,9 @@ void MainWindow::addFortune()
 
 void MainWindow::deleteFortune()
 {
+  if (!ui.fortuneList->currentItem())
+    return;
+  
   if (doc) {
     int idx = ui.fortuneList->currentRow();
     doc->removeFortuneAt(idx);
