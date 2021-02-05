@@ -30,8 +30,8 @@ class OmiDoc : public QObject
   Q_OBJECT
 
 public:
-  OmiDoc(QObject *parent = nullptr, const char *name = nullptr)
-    : QObject(parent, name), commentList(new QStringList()),
+  OmiDoc(QObject *parent = nullptr)
+    : QObject(parent), commentList(new QStringList()),
       fortuneList(new QStringList()) {}
   ~OmiDoc();
   const QString& commentAt(int);
@@ -40,22 +40,22 @@ public:
   int fortuneCount();
 
 public slots:
-  void addComment(const QString&);
+  void addComment(QString&);
   void removeCommentAt(int);
-  void replaceCommentAt(int, const QString&);
-  void addFortune(const QString&);
+  void replaceCommentAt(int, QString&);
+  void addFortune(QString&);
   void removeFortuneAt(int);
-  void replaceFortuneAt(int, const QString&);
+  void replaceFortuneAt(int, QString&);
   qint64 writeToFile(QFile&);
   qint64 readFromFile(QFile&);
 
 signals:
-  void commentAdded(int, const QString&);
-  void commentRemovedAt(int, const QString&);
-  void commentReplacedAt(int, const QString&);
-  void fortuneAdded(int, const QString&);
-  void fortuneRemovedAt(int, const QString&);
-  void fortuneReplacedAt(int, const QString&);
+  void commentAdded(int, QString&);
+  void commentRemovedAt(int, QString&);
+  void commentReplacedAt(int, QString&);
+  void fortuneAdded(int, QString&);
+  void fortuneRemovedAt(int, QString&);
+  void fortuneReplacedAt(int, QString&);
 
 private:
   QStringList *commentList;

@@ -82,40 +82,88 @@ MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(
   createStatusBar();
 }
 
-void MainWindow::addComment()
-{
+void MainWindow::addComment(int index, QString& text) {
+  if (ui.commentList->count() <= index) {
+    ui.commentList->addItem(text);
+    index = ui.commentList->count() - 1;
+    emit commentAdded(text);
+  }    
+}
+
+void MainWindow::addFortune(int index, QString& text) {
+  if (ui.fortuneList->count() <= index) {
+    ui.fortuneList->addItem(text);
+    index = ui.fortuneList->count() - 1;
+    emit fortuneAdded(text);
+  }    
+}
+
+void MainWindow::replaceCommentAt(int index, QString& text) {
+  if (index < ui.commentList->count()) {
+    QString current = ui.commentList->item(index)->text();
+    if (text != current) {
+      ui.commentList->item(index)->setText(text);
+      emit commentReplacedAt(index, text);
+    }
+  }
+}
+
+void MainWindow::replaceFortuneAt(int index, QString& text) {
+  if (index < ui.fortuneList->count()) {
+    QString current = ui.fortuneList->item(index)->text();
+    if (text != current) {
+      ui.fortuneList->item(index)->setText(text);
+      emit fortuneReplacedAt(index, text);
+    }
+  }
+}
+
+void MainWindow::removeCommentAt(int index, QString& text) {
+  if (index < ui.commentList->count()) {
+    QString current = ui.commentList->item(index)->text();
+    if (text == current) {
+      delete ui.commentList->item(index);
+      emit commentRemovedAt(index);
+    }
+  }
+}
+
+void MainWindow::removeFortuneAt(int index, QString& text) {
+  if (index < ui.fortuneList->count()) {
+    QString current = ui.fortuneList->item(index)->text();
+    if (text == current) {
+      delete ui.fortuneList->item(index);
+      emit fortuneRemovedAt(index);
+    }
+  }
+}
+
+void MainWindow::addComment() {
   EditDialog dlg(this);
   connectEditMenu(&dlg);
   dlg.setWindowTitle(tr("Add Comment"));
 
   if (dlg.exec() == QDialog::Accepted) {
-    if (!doc)
-      doc = new OmiDoc();
+    if (!doc) setupOmiDoc();
     QString text = dlg.textValue();
-    ui.commentList->addItem(text);
-    doc->addComment(text);
+    addComment(ui.commentList->count(), text);
     setWindowModified(true);
     updateStatusBar();
   }
   disconnectEditMenu(&dlg);
 }
 
-void MainWindow::deleteComment()
-{
-  if (!ui.commentList->currentItem())
-    return;
-  
-  if (doc) {
-    int idx = ui.commentList->currentRow();
-    doc->removeCommentAt(idx);
+void MainWindow::deleteComment() {
+  if (ui.commentList->currentItem()) {
+    int index = ui.commentList->currentRow();
+    QString text = ui.commentList->currentItem()->text();
+    removeCommentAt(index, text);
+    setWindowModified(true);
+    updateStatusBar();
   }
-  delete ui.commentList->currentItem();
-  setWindowModified(true);
-  updateStatusBar();
 }
 
-void MainWindow::editComment()
-{
+void MainWindow::editComment() {
   if (!ui.commentList->currentItem())
     return;
 
@@ -126,50 +174,39 @@ void MainWindow::editComment()
   dlg.setTextValue(entry);
 
   if (dlg.exec() == QDialog::Accepted) {
-    if (doc) {
-      int idx = ui.commentList->currentRow();
-      doc->replaceCommentAt(idx, dlg.textValue());
-    }
-    ui.commentList->currentItem()->setText(dlg.textValue());
+    QString text = dlg.textValue();
+    replaceCommentAt(ui.commentList->currentRow(), text);
     setWindowModified(true);
   }
   disconnectEditMenu(&dlg);
 }
 
-void MainWindow::addFortune()
-{
+void MainWindow::addFortune() {
   EditDialog dlg(this);
   connectEditMenu(&dlg);
   dlg.setWindowTitle(tr("Add Fortune"));
 
   if (dlg.exec() == QDialog::Accepted) {
-    if (!doc)
-      doc = new OmiDoc();
+    if (!doc) setupOmiDoc();
     QString text = dlg.textValue();
-    ui.fortuneList->addItem(text);
-    doc->addFortune(text);
+    addFortune(ui.fortuneList->count(), text);
     setWindowModified(true);
     updateStatusBar();
   }
   disconnectEditMenu(&dlg);
 }
 
-void MainWindow::deleteFortune()
-{
-  if (!ui.fortuneList->currentItem())
-    return;
-  
-  if (doc) {
-    int idx = ui.fortuneList->currentRow();
-    doc->removeFortuneAt(idx);
+void MainWindow::deleteFortune() {
+  if (ui.fortuneList->currentItem()) {
+    int index = ui.fortuneList->currentRow();
+    QString text = ui.fortuneList->currentItem()->text();
+    removeFortuneAt(index, text);
+    setWindowModified(true);
+    updateStatusBar();
   }
-  delete ui.fortuneList->currentItem();
-  setWindowModified(true);
-  updateStatusBar();
 }
 
-void MainWindow::editFortune()
-{
+void MainWindow::editFortune() {
   if (!ui.fortuneList->currentItem())
     return;
 
@@ -180,11 +217,8 @@ void MainWindow::editFortune()
   dlg.setTextValue(entry);
 
   if (dlg.exec() == QDialog::Accepted) {
-    if (doc) {
-      int idx = ui.fortuneList->currentRow();
-      doc->replaceFortuneAt(idx, dlg.textValue());
-    }
-    ui.fortuneList->currentItem()->setText(dlg.textValue());
+    QString text = dlg.textValue();
+    replaceFortuneAt(ui.fortuneList->currentRow(), text);
     setWindowModified(true);
   }
   disconnectEditMenu(&dlg);
@@ -322,11 +356,7 @@ bool MainWindow::saveFile(const QString& filename)
   QFile file(filename);
   bool success = file.open(QIODevice::WriteOnly | QIODevice::Truncate);
   if (success) {
-    QDataStream out(&file);
-    if (filename.endsWith(".omi"))
-      success = (doc->writeToStream(out) > 0) ? true : false;
-    else
-      success = (doc->writeStrfileToStream(out) > 0) ? true : false;
+    success = (doc->writeToFile(file) > 0) ? true : false;
     if (success)
       setCurrentFile(filename);
     file.close();
@@ -339,17 +369,9 @@ bool MainWindow::loadFile(const QString& filename)
   QFile file(filename);
   bool success = file.open(QIODevice::ReadOnly);
   if (success) {
-    doc = OmiDoc::newFromFile(file);
-    if (doc) {
-      int count = doc->commentCount();
-      int i;
-      for (i = 0; i < count; i++)
-        ui.commentList->addItem(doc->commentAt(i));
-      count = doc->fortuneCount();
-      for (i = 0; i < count; i++)
-        ui.fortuneList->addItem(doc->fortuneAt(i));
-      setCurrentFile(filename);
-    }
+    setupOmiDoc();
+    if (doc)
+      success = (doc->readFromFile(file) > 0) ? true: false;
     else
       success = false;
     file.close();
@@ -576,4 +598,24 @@ void MainWindow::updateStatusBar()
 {
   commentCounter->setText(QString::number(ui.commentList->count()));
   fortuneCounter->setText(QString::number(ui.fortuneList->count()));
+}
+
+void MainWindow::setupOmiDoc() {
+  if (!doc) {
+    doc = new OmiDoc(this);
+    // Connect our signals to OmiDoc's slots:
+    connect(this, SIGNAL(commentAdded(QString&)), doc, SLOT(addComment(QString&)));
+    connect(this, SIGNAL(commentRemovedAt(int)), doc, SLOT(removeCommentAt(int)));
+    connect(this, SIGNAL(commentReplacedAt(int,QString&)), doc, SLOT(replaceCommentAt(int,QString&)));
+    connect(this, SIGNAL(fortuneAdded(QString&)), doc, SLOT(addFortune(QString&)));
+    connect(this, SIGNAL(fortuneRemovedAt(int)), doc, SLOT(removeFortuneAt(int)));
+    connect(this, SIGNAL(fortuneReplacedAt(int,QString&)), doc, SLOT(replaceFortuneAt(int,QString&)));
+    // Connect OmiDoc's signals to our slots
+    connect(doc, SIGNAL(commentAdded(int,QString&)), this, SLOT(addComment(int,QString&)));
+    connect(doc, SIGNAL(commentRemovedAt(int,QString&)), this, SLOT(removeCommentAt(int,QString&)));
+    connect(doc, SIGNAL(commentReplacedAt(int,QString&)), this, SLOT(replaceCommentAt(int,QString&)));
+    connect(doc, SIGNAL(fortuneAdded(int,QString&)), this, SLOT(addFortune(int,QString&)));
+    connect(doc, SIGNAL(fortuneRemovedAt(int,QString&)), this, SLOT(removeFortuneAt(int,QString&)));
+    connect(doc, SIGNAL(fortuneReplacedAt(int,QString&)), this, SLOT(replaceFortuneAt(int,QString&)));
+  }
 }

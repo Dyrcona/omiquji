@@ -47,12 +47,12 @@ OmiDoc::~OmiDoc() {
   delete fortuneList;
 }
 
-void OmiDoc::addComment(const QString &comment) {
+void OmiDoc::addComment(QString &comment) {
   commentList->append(comment);
   emit commentAdded(commentList->count() - 1, comment);
 }
 
-void OmiDoc::addFortune(const QString &fortune) {
+void OmiDoc::addFortune(QString &fortune) {
   fortuneList->append(fortune);
   emit fortuneAdded(fortuneList->count() - 1, fortune);
 }
@@ -73,22 +73,22 @@ void OmiDoc::removeFortuneAt(int i) {
   }
 }
 
-void OmiDoc::replaceCommentAt(int i, const QString& text) {
+void OmiDoc::replaceCommentAt(int i, QString& text) {
   if (i < commentList->count()) {
     QString current = commentList->at(i);
     if (current != text) {
       commentList->replace(i, text);
-      emit replacedCommentAt(i, text):
+      emit commentReplacedAt(i, text);
     }
   }
 }
 
-void OmiDoc::replaceFortuneAt(int i, const QString& text) {
+void OmiDoc::replaceFortuneAt(int i, QString& text) {
   if (i < fortuneList->count()) {
     QString current = fortuneList->at(i);
     if (current != text) {
       fortuneList->replace(i, text);
-      emit replacedFortuneAt(i, text);
+      emit fortuneReplacedAt(i, text);
     }
   }
 }

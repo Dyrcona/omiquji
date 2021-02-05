@@ -11,6 +11,8 @@ src/mainwindow.o
 src/moc_mainwindow.cpp
 src/moc_mainwindow.o
 src/moc_predefs.h
+src/moc_omidoc.cpp
+src/moc_omidoc.o
 src/omidoc.o
 src/ui_aboutdialog.h
 src/ui_editdialog.h

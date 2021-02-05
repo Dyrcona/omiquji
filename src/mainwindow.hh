@@ -36,7 +36,21 @@ public:
   MainWindow(bool shouldUpdateActions = false, QWidget *parent = 0);
 
 public slots:
+  void addComment(int, QString&);
+  void removeCommentAt(int, QString&);
+  void replaceCommentAt(int, QString&);
+  void addFortune(int, QString&);
+  void removeFortuneAt(int, QString&);
+  void replaceFortuneAt(int, QString&);
 
+signals:
+  void commentAdded(QString&);
+  void commentRemovedAt(int);
+  void commentReplacedAt(int, QString&);
+  void fortuneAdded(QString&);
+  void fortuneRemovedAt(int);
+  void fortuneReplacedAt(int, QString&);
+  
 protected:
   void closeEvent(QCloseEvent*);
 
@@ -76,6 +90,7 @@ private:
   void updateStatusBar();
   bool setupSearch(QListWidget*);
   void findNext(QListWidget*, FindOptions*);
+  void setupOmiDoc();
 
   Ui::MainWindow ui;
   OmiDoc *doc;
