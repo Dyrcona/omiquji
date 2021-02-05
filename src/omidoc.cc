@@ -324,6 +324,8 @@ OmiDoc* readFromStrfile(QFile &file) {
       while (true) {
         char *next = std::strstr(start, "%\n");
         if (next) {
+          // Make sure the % is preceded by a newline.
+          if (next > data && *(next - 1) != '\n') continue;
           length = next - start;
           if (length > 0) {
             QString str = QString::fromUtf8(start, length);
