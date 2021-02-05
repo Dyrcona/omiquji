@@ -37,81 +37,101 @@ struct OmikujiHeader {
 const char omikuji_version = 0;
 const char *omikuji_signature = "omikuji";
 
-OmiDoc* readFromOmifile(QFile &file);
-OmiDoc* readFromStrfile(QFile &file);
 bool checkOmikujiHeader(const OmikujiHeader header);
 TableEntry *copyTableEntry(TableEntry *entry, char *data, quint32 offset);
-int writeStringListToStrfileStream(QDataStream &stream, QStringList *list, const char *separator, bool &wantSeparator);
+qint64 writeStringListToStrfileStream(QDataStream &stream, QStringList *list,
+                                      const char *separator, bool &wantSeparator);
 
-OmiDoc::OmiDoc()
-{
-  commentList = new QStringList();
-  fortuneList = new QStringList();
-}
-
-OmiDoc::~OmiDoc()
-{
+OmiDoc::~OmiDoc() {
   delete commentList;
   delete fortuneList;
 }
 
-void OmiDoc::addComment(const QString &comment)
-{
+void OmiDoc::addComment(const QString &comment) {
   commentList->append(comment);
+  emit commentAdded(commentList->count() - 1, comment);
 }
 
-void OmiDoc::addFortune(const QString &fortune)
-{
+void OmiDoc::addFortune(const QString &fortune) {
   fortuneList->append(fortune);
+  emit fortuneAdded(fortuneList->count() - 1, fortune);
 }
 
-void OmiDoc::removeCommentAt(int i)
-{
-  if (i < commentList->count())
+void OmiDoc::removeCommentAt(int i) {
+  if (i < commentList->count()) {
+    QString current = commentList->at(i);
     commentList->removeAt(i);
+    emit commentRemovedAt(i, current);
+  }
 }
 
-void OmiDoc::removeFortuneAt(int i)
-{
-  if (i < fortuneList->count())
+void OmiDoc::removeFortuneAt(int i) {
+  if (i < fortuneList->count()) {
+    QString current = fortuneList->at(i);
     fortuneList->removeAt(i);
+    emit fortuneRemovedAt(i, current);
+  }
 }
 
-void OmiDoc::replaceCommentAt(int i, const QString& text)
-{
-  if (i < commentList->count())
-    commentList->replace(i, text);
+void OmiDoc::replaceCommentAt(int i, const QString& text) {
+  if (i < commentList->count()) {
+    QString current = commentList->at(i);
+    if (current != text) {
+      commentList->replace(i, text);
+      emit replacedCommentAt(i, text):
+    }
+  }
 }
 
-void OmiDoc::replaceFortuneAt(int i, const QString& text)
-{
-  if (i < fortuneList->count())
-    fortuneList->replace(i, text);
+void OmiDoc::replaceFortuneAt(int i, const QString& text) {
+  if (i < fortuneList->count()) {
+    QString current = fortuneList->at(i);
+    if (current != text) {
+      fortuneList->replace(i, text);
+      emit replacedFortuneAt(i, text);
+    }
+  }
 }
 
-int OmiDoc::commentCount()
-{
-  return commentList->size();
+int OmiDoc::commentCount() {
+  return commentList->count();
 }
 
-int OmiDoc::fortuneCount()
-{
-  return fortuneList->size();
+int OmiDoc::fortuneCount() {
+  return fortuneList->count();
 }
 
-const QString& OmiDoc::commentAt(int i)
-{
+const QString& OmiDoc::commentAt(int i) {
   return commentList->at(i);
 }
 
-const QString& OmiDoc::fortuneAt(int i)
-{
+const QString& OmiDoc::fortuneAt(int i) {
   return fortuneList->at(i);
 }
 
-int OmiDoc::writeToStream(QDataStream& stream)
-{
-  int bytesOut = 0;
+qint64 OmiDoc::writeToFile(QFile &output) {
+  bool wantClose = false;
+  qint64 bytesOut = 0;
+
+  if (!output.isOpen()) {
+    if (output.open(QIODevice::WriteOnly | QIODevice::Truncate))
+      wantClose = true;
+    else
+      return -1;
+  }
+  QDataStream out(&output);
+  if (output.fileName().endsWith(".omi")) {
+    bytesOut = this->writeOmifileToStream(out);
+  } else {
+    bytesOut = this->writeStrfileToStream(out);
+  }
+
+  if (wantClose) output.close();
+  return bytesOut;
+}
+
+qint64 OmiDoc::writeOmifileToStream(QDataStream& stream) {
+  qint64 bytesOut = 0;
 
   // Some handy variables for tracking things.
   quint32 offset = 0;
@@ -194,9 +214,8 @@ int OmiDoc::writeToStream(QDataStream& stream)
   return bytesOut;
 }
 
-int OmiDoc::writeStrfileToStream(QDataStream &stream)
-{
-  int bytesOut = 0;
+qint64 OmiDoc::writeStrfileToStream(QDataStream &stream) {
+  qint64 bytesOut = 0;
   bool wantSeparator = false;
   const char *separator = "%\n";
 
@@ -208,40 +227,37 @@ int OmiDoc::writeStrfileToStream(QDataStream &stream)
   return bytesOut;
 }
 
-OmiDoc* OmiDoc::newFromFile(QFile &input) {
-  OmiDoc *doc = 0;
+qint64 OmiDoc::readFromFile(QFile &input) {
   bool wantClose = false;
+  qint64 bytesRead = 0;
   if (input.isReadable()) {
     if (!input.isOpen()) {
       if (input.open(QIODevice::ReadOnly))
         wantClose = true;
       else
-        return doc;
+        return -1;
     }
     if (input.fileName().endsWith(".omi")) {
-      doc = readFromOmifile(input);
+      bytesRead = readFromOmifile(input);
     } else {
-      doc = readFromStrfile(input);
+      bytesRead = readFromStrfile(input);
     }
   }
   if (wantClose) input.close();
-  return doc;
+  return bytesRead;
 }
 
-OmiDoc* readFromOmifile(QFile &file)
-{
-  OmiDoc *doc = 0;
+qint64 OmiDoc::readFromOmifile(QFile &file) {
   qint64 len = file.size();
   char *data = new char[len];
-  if (!data) return doc;
+  if (!data) return -1;
   len = file.read(data, len);
   if (len < file.size()) {
     delete data;
-    return doc;
+    return -1;
   }
 
-  // Currently only support creation from omifiles, so check for the
-  // header.
+  qint64 bytesRead = 0;
   if (static_cast<unsigned long>(len) >= sizeof(OmikujiHeader)) {
     // Minimum size of an omikuji file is 24 bytes for the header.
     OmikujiHeader header;
@@ -249,16 +265,13 @@ OmiDoc* readFromOmifile(QFile &file)
     if (checkOmikujiHeader(header)) {
       // Fix the other header fields.
       header.commentHeader.offset =
-        qFromBigEndian(header.commentHeader.offset);
+      qFromBigEndian(header.commentHeader.offset);
       header.commentHeader.length =
-        qFromBigEndian(header.commentHeader.length);
+      qFromBigEndian(header.commentHeader.length);
       header.fortuneHeader.offset =
-        qFromBigEndian(header.fortuneHeader.offset);
+      qFromBigEndian(header.fortuneHeader.offset);
       header.fortuneHeader.length =
-        qFromBigEndian(header.fortuneHeader.length);
-
-      // Create the doc:
-      doc = new OmiDoc();
+      qFromBigEndian(header.fortuneHeader.length);
 
       // Check for and copy comments.
       if (header.commentHeader.offset && header.commentHeader.length) {
@@ -271,8 +284,9 @@ OmiDoc* readFromOmifile(QFile &file)
             if (entry.offset >= sizeof(OmikujiHeader)
                 && entry.offset + entry.length <= static_cast<unsigned long>(len)) {
               QString str = QString::fromUtf8((data + entry.offset),
-                entry.length);
-              doc->addComment(str);
+                                              entry.length);
+              this->addComment(str);
+              bytesRead += entry.length;
             }
           }
           offset += sizeof(TableEntry);
@@ -288,10 +302,11 @@ OmiDoc* readFromOmifile(QFile &file)
               && offset + sizeof(TableEntry) <= static_cast<unsigned long>(len)) {
             copyTableEntry(&entry, data, offset);
             if (entry.offset >= sizeof(OmikujiHeader)
-              && entry.offset + entry.length <= len) {
+                && entry.offset + entry.length <= len) {
               QString str = QString::fromUtf8((data + entry.offset),
-                entry.length);
-              doc->addFortune(str);
+                                              entry.length);
+              this->addFortune(str);
+              bytesRead += entry.length;
             }
           }
           offset += sizeof(TableEntry);
@@ -303,23 +318,21 @@ OmiDoc* readFromOmifile(QFile &file)
 
   if (data) delete data;
 
-  return doc;
+  return bytesRead;
 }
 
-OmiDoc* readFromStrfile(QFile &file) {
-  OmiDoc *doc = 0;
+qint64 OmiDoc::readFromStrfile(QFile &file) {
   qint64 size = file.size();
   if (size > 0) {
     char *data = new char[size + 1];
-    if (!data) return doc;
+    if (!data) return -1;
     qint64 length = file.read(data, size);
     if (length < size) {
       delete data;
-      return doc;
+      return -1;
     }
     else {
       data[length] = 0;
-      doc = new OmiDoc();
       char *start = data;
       while (true) {
         char *next = std::strstr(start, "%\n");
@@ -329,7 +342,7 @@ OmiDoc* readFromStrfile(QFile &file) {
           length = next - start;
           if (length > 0) {
             QString str = QString::fromUtf8(start, length);
-            doc->addFortune(str);
+            this->addFortune(str);
           }
           start = next + 2;
           if (start >= (data + size)) break;
@@ -337,7 +350,7 @@ OmiDoc* readFromStrfile(QFile &file) {
           length = std::strlen(start);
           if (length > 0) {
             QString str = QString::fromUtf8(start, length);
-            doc->addFortune(str);
+            this->addFortune(str);
           }
           break;
         }
@@ -345,11 +358,10 @@ OmiDoc* readFromStrfile(QFile &file) {
       delete data;
     }
   }
-  return doc;
+  return size;
 }
 
-bool checkOmikujiHeader(const OmikujiHeader header)
-{
+bool checkOmikujiHeader(const OmikujiHeader header) {
   bool isValid = false;
 
   // Only support 1 version of omikji files, since only 1 exists.
@@ -366,16 +378,16 @@ bool checkOmikujiHeader(const OmikujiHeader header)
   return isValid;
 }
 
-TableEntry *copyTableEntry(TableEntry *entry, char *data, quint32 offset)
-{
+TableEntry *copyTableEntry(TableEntry *entry, char *data, quint32 offset) {
   std::memcpy(entry, (data + offset), sizeof(TableEntry));
   entry->offset = qFromBigEndian(entry->offset);
   entry->length = qFromBigEndian(entry->length);
   return entry;
 }
 
-int writeStringListToStrfileStream(QDataStream &stream, QStringList *list, const char *separator, bool &wantSeparator) {
-  int bytesOut = 0;
+qint64 writeStringListToStrfileStream(QDataStream &stream, QStringList *list,
+                                      const char *separator, bool &wantSeparator) {
+  qint64 bytesOut = 0;
 
   quint32 entries = list->count();
   if (entries) {

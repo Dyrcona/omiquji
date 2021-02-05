@@ -19,35 +19,52 @@
 #ifndef OMIDOC_HH
 #define OMIDOC_HH
 
+#include <QObject>
+#include <QString>
 #include <QStringList>
 #include <QDataStream>
 #include <QFile>
 
-class OmiDoc
+class OmiDoc : public QObject
 {
+  Q_OBJECT
+
 public:
-  OmiDoc();
+  OmiDoc(QObject *parent = nullptr, const char *name = nullptr)
+    : QObject(parent, name), commentList(new QStringList()),
+      fortuneList(new QStringList()) {}
   ~OmiDoc();
-  void addComment(const QString&);
   const QString& commentAt(int);
+  const QString& fortuneAt(int);
+  int commentCount();
+  int fortuneCount();
+
+public slots:
+  void addComment(const QString&);
   void removeCommentAt(int);
   void replaceCommentAt(int, const QString&);
   void addFortune(const QString&);
-  const QString& fortuneAt(int);
   void removeFortuneAt(int);
   void replaceFortuneAt(int, const QString&);
-  int commentCount();
-  int fortuneCount();
-  const QString& commentAt(int) const;
-  const QString& fortuneAt(int) const;
-  int writeToStream(QDataStream&);
-  int writeStrfileToStream(QDataStream&);
+  qint64 writeToFile(QFile&);
+  qint64 readFromFile(QFile&);
 
-  static OmiDoc* newFromFile(QFile &input);
+signals:
+  void commentAdded(int, const QString&);
+  void commentRemovedAt(int, const QString&);
+  void commentReplacedAt(int, const QString&);
+  void fortuneAdded(int, const QString&);
+  void fortuneRemovedAt(int, const QString&);
+  void fortuneReplacedAt(int, const QString&);
 
 private:
   QStringList *commentList;
   QStringList *fortuneList;
+  qint64 writeOmifileToStream(QDataStream&);
+  qint64 writeStrfileToStream(QDataStream&);
+  qint64 readFromOmifile(QFile&);
+  qint64 readFromStrfile(QFile&);
+
 };
 
 #endif
