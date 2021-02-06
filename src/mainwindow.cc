@@ -152,7 +152,6 @@ void MainWindow::addComment() {
 void MainWindow::deleteComment() {
   if (ui.commentList->currentItem()) {
     int index = ui.commentList->currentRow();
-    QString text = ui.commentList->currentItem()->text();
     removeCommentAt(index);
     setWindowModified(true);
     updateStatusBar();
@@ -170,8 +169,8 @@ void MainWindow::editComment() {
   dlg.setTextValue(entry);
 
   if (dlg.exec() == QDialog::Accepted) {
-    QString text = dlg.textValue();
-    replaceCommentAt(ui.commentList->currentRow(), text);
+    entry = dlg.textValue();
+    replaceCommentAt(ui.commentList->currentRow(), entry);
     setWindowModified(true);
   }
   disconnectEditMenu(&dlg);
@@ -195,7 +194,6 @@ void MainWindow::addFortune() {
 void MainWindow::deleteFortune() {
   if (ui.fortuneList->currentItem()) {
     int index = ui.fortuneList->currentRow();
-    QString text = ui.fortuneList->currentItem()->text();
     removeFortuneAt(index);
     setWindowModified(true);
     updateStatusBar();
@@ -213,8 +211,8 @@ void MainWindow::editFortune() {
   dlg.setTextValue(entry);
 
   if (dlg.exec() == QDialog::Accepted) {
-    QString text = dlg.textValue();
-    replaceFortuneAt(ui.fortuneList->currentRow(), text);
+    entry = dlg.textValue();
+    replaceFortuneAt(ui.fortuneList->currentRow(), entry);
     setWindowModified(true);
   }
   disconnectEditMenu(&dlg);
