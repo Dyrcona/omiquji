@@ -38,6 +38,8 @@ public:
   const QString& fortuneAt(int);
   int commentCount();
   int fortuneCount();
+  qint64 writeToFile(QFile&);
+  qint64 readFromFile(QFile&);
 
 public slots:
   void addComment(QString&);
@@ -46,16 +48,10 @@ public slots:
   void addFortune(QString&);
   void removeFortuneAt(int);
   void replaceFortuneAt(int, QString&);
-  qint64 writeToFile(QFile&);
-  qint64 readFromFile(QFile&);
 
 signals:
-  void commentAdded(int, QString&);
-  void commentRemovedAt(int, QString&);
-  void commentReplacedAt(int, QString&);
-  void fortuneAdded(int, QString&);
-  void fortuneRemovedAt(int, QString&);
-  void fortuneReplacedAt(int, QString&);
+  void commentsAdded(const QStringList&);
+  void fortunesAdded(const QStringList&);
 
 private:
   QStringList *commentList;

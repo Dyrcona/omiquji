@@ -49,19 +49,16 @@ OmiDoc::~OmiDoc() {
 
 void OmiDoc::addComment(QString &comment) {
   commentList->append(comment);
-  emit commentAdded(commentList->count() - 1, comment);
 }
 
 void OmiDoc::addFortune(QString &fortune) {
   fortuneList->append(fortune);
-  emit fortuneAdded(fortuneList->count() - 1, fortune);
 }
 
 void OmiDoc::removeCommentAt(int i) {
   if (i < commentList->count()) {
     QString current = commentList->at(i);
     commentList->removeAt(i);
-    emit commentRemovedAt(i, current);
   }
 }
 
@@ -69,7 +66,6 @@ void OmiDoc::removeFortuneAt(int i) {
   if (i < fortuneList->count()) {
     QString current = fortuneList->at(i);
     fortuneList->removeAt(i);
-    emit fortuneRemovedAt(i, current);
   }
 }
 
@@ -78,7 +74,6 @@ void OmiDoc::replaceCommentAt(int i, QString& text) {
     QString current = commentList->at(i);
     if (current != text) {
       commentList->replace(i, text);
-      emit commentReplacedAt(i, text);
     }
   }
 }
@@ -88,7 +83,6 @@ void OmiDoc::replaceFortuneAt(int i, QString& text) {
     QString current = fortuneList->at(i);
     if (current != text) {
       fortuneList->replace(i, text);
-      emit fortuneReplacedAt(i, text);
     }
   }
 }
@@ -241,6 +235,10 @@ qint64 OmiDoc::readFromFile(QFile &input) {
       bytesRead = readFromOmifile(input);
     } else {
       bytesRead = readFromStrfile(input);
+    }
+    if (bytesRead > 0) {
+      emit commentsAdded(*commentList);
+      emit fortunesAdded(*fortuneList);
     }
   }
   if (wantClose) input.close();

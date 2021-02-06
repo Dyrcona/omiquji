@@ -35,14 +35,6 @@ class MainWindow : public QMainWindow
 public:
   MainWindow(bool shouldUpdateActions = false, QWidget *parent = 0);
 
-public slots:
-  void addComment(int, QString&);
-  void removeCommentAt(int, QString&);
-  void replaceCommentAt(int, QString&);
-  void addFortune(int, QString&);
-  void removeFortuneAt(int, QString&);
-  void replaceFortuneAt(int, QString&);
-
 signals:
   void commentAdded(QString&);
   void commentRemovedAt(int);
@@ -61,6 +53,8 @@ private slots:
   void addFortune();
   void editFortune();
   void deleteFortune();
+  void addComments(const QStringList&);
+  void addFortunes(const QStringList&);
   // Action methods:
   void newFile();
   void open();
@@ -75,6 +69,12 @@ private slots:
   void findNextInFortunes(FindOptions*);
 
 private:
+  void addComment(QString&);
+  void removeCommentAt(int);
+  void replaceCommentAt(int, QString&);
+  void addFortune(QString&);
+  void removeFortuneAt(int);
+  void replaceFortuneAt(int, QString&);
   bool okToContinue();
   bool checkDocForSave();
   bool loadFile(const QString&);

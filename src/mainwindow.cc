@@ -82,20 +82,22 @@ MainWindow::MainWindow(bool shouldUpdateActions, QWidget *parent) : QMainWindow(
   createStatusBar();
 }
 
-void MainWindow::addComment(int index, QString& text) {
-  if (ui.commentList->count() <= index) {
-    ui.commentList->addItem(text);
-    index = ui.commentList->count() - 1;
-    emit commentAdded(text);
-  }    
+void MainWindow::addComments(const QStringList &list) {
+  ui.commentList->addItems(list);
 }
 
-void MainWindow::addFortune(int index, QString& text) {
-  if (ui.fortuneList->count() <= index) {
-    ui.fortuneList->addItem(text);
-    index = ui.fortuneList->count() - 1;
-    emit fortuneAdded(text);
-  }    
+void MainWindow::addFortunes(const QStringList &list) {
+  ui.fortuneList->addItems(list);
+}
+
+void MainWindow::addComment(QString& text) {
+  ui.commentList->addItem(text);
+  emit commentAdded(text);
+}
+
+void MainWindow::addFortune(QString& text) {
+  ui.fortuneList->addItem(text);
+  emit fortuneAdded(text);
 }
 
 void MainWindow::replaceCommentAt(int index, QString& text) {
@@ -118,23 +120,17 @@ void MainWindow::replaceFortuneAt(int index, QString& text) {
   }
 }
 
-void MainWindow::removeCommentAt(int index, QString& text) {
+void MainWindow::removeCommentAt(int index) {
   if (index < ui.commentList->count()) {
-    QString current = ui.commentList->item(index)->text();
-    if (text == current) {
-      delete ui.commentList->item(index);
-      emit commentRemovedAt(index);
-    }
+    delete ui.commentList->item(index);
+    emit commentRemovedAt(index);
   }
 }
 
-void MainWindow::removeFortuneAt(int index, QString& text) {
+void MainWindow::removeFortuneAt(int index) {
   if (index < ui.fortuneList->count()) {
-    QString current = ui.fortuneList->item(index)->text();
-    if (text == current) {
-      delete ui.fortuneList->item(index);
-      emit fortuneRemovedAt(index);
-    }
+    delete ui.fortuneList->item(index);
+    emit fortuneRemovedAt(index);
   }
 }
 
@@ -146,7 +142,7 @@ void MainWindow::addComment() {
   if (dlg.exec() == QDialog::Accepted) {
     if (!doc) setupOmiDoc();
     QString text = dlg.textValue();
-    addComment(ui.commentList->count(), text);
+    addComment(text);
     setWindowModified(true);
     updateStatusBar();
   }
@@ -157,7 +153,7 @@ void MainWindow::deleteComment() {
   if (ui.commentList->currentItem()) {
     int index = ui.commentList->currentRow();
     QString text = ui.commentList->currentItem()->text();
-    removeCommentAt(index, text);
+    removeCommentAt(index);
     setWindowModified(true);
     updateStatusBar();
   }
@@ -189,7 +185,7 @@ void MainWindow::addFortune() {
   if (dlg.exec() == QDialog::Accepted) {
     if (!doc) setupOmiDoc();
     QString text = dlg.textValue();
-    addFortune(ui.fortuneList->count(), text);
+    addFortune(text);
     setWindowModified(true);
     updateStatusBar();
   }
@@ -200,7 +196,7 @@ void MainWindow::deleteFortune() {
   if (ui.fortuneList->currentItem()) {
     int index = ui.fortuneList->currentRow();
     QString text = ui.fortuneList->currentItem()->text();
-    removeFortuneAt(index, text);
+    removeFortuneAt(index);
     setWindowModified(true);
     updateStatusBar();
   }
@@ -370,13 +366,17 @@ bool MainWindow::loadFile(const QString& filename)
   bool success = file.open(QIODevice::ReadOnly);
   if (success) {
     setupOmiDoc();
-    if (doc)
+    if (doc) {
       success = (doc->readFromFile(file) > 0) ? true: false;
-    else
+      if (success) {
+        setCurrentFile(filename);
+        this->updateStatusBar();
+      }
+    } else {
       success = false;
+    }
     file.close();
   }
-  this->updateStatusBar();
   return success;
 }
 
@@ -611,11 +611,7 @@ void MainWindow::setupOmiDoc() {
     connect(this, SIGNAL(fortuneRemovedAt(int)), doc, SLOT(removeFortuneAt(int)));
     connect(this, SIGNAL(fortuneReplacedAt(int,QString&)), doc, SLOT(replaceFortuneAt(int,QString&)));
     // Connect OmiDoc's signals to our slots
-    connect(doc, SIGNAL(commentAdded(int,QString&)), this, SLOT(addComment(int,QString&)));
-    connect(doc, SIGNAL(commentRemovedAt(int,QString&)), this, SLOT(removeCommentAt(int,QString&)));
-    connect(doc, SIGNAL(commentReplacedAt(int,QString&)), this, SLOT(replaceCommentAt(int,QString&)));
-    connect(doc, SIGNAL(fortuneAdded(int,QString&)), this, SLOT(addFortune(int,QString&)));
-    connect(doc, SIGNAL(fortuneRemovedAt(int,QString&)), this, SLOT(removeFortuneAt(int,QString&)));
-    connect(doc, SIGNAL(fortuneReplacedAt(int,QString&)), this, SLOT(replaceFortuneAt(int,QString&)));
+    connect(doc, SIGNAL(commentsAdded(const QStringList&)), this, SLOT(addComments(const QStringList&)));
+    connect(doc, SIGNAL(fortunesAdded(const QStringList&)), this, SLOT(addFortunes(const QStringList&)));
   }
 }
