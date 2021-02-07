@@ -91,11 +91,13 @@ void MainWindow::addFortunes(const QStringList &list) {
 
 void MainWindow::addComment(QString& text) {
   ui.commentList->addItem(text);
+  ui.commentList->setCurrentRow(ui.commentList->count() - 1, QItemSelectionModel::SelectCurrent);
   emit commentAdded(text);
 }
 
 void MainWindow::addFortune(QString& text) {
   ui.fortuneList->addItem(text);
+  ui.fortuneList->setCurrentRow(ui.fortuneList->count() - 1, QItemSelectionModel::SelectCurrent);
   emit fortuneAdded(text);
 }
 
