@@ -67,7 +67,6 @@ private slots:
   void searchFortunes();
   void findNextInComments(FindDialog::Options*);
   void findNextInFortunes(FindDialog::Options*);
-  void toggleNewSearch(int);
 
 private:
   void addComment(QString&);
