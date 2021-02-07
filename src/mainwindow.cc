@@ -93,11 +93,11 @@ void MainWindow::addComment(QString& text) {
   if (ui.commentList->currentItem()) {
     int index = ui.commentList->currentRow() + 1;
     ui.commentList->insertItem(index, text);
-    ui.commentList->setCurrentRow(index, QItemSelectionModel::SelectCurrent);
+    ui.commentList->setCurrentRow(index, QItemSelectionModel::ClearAndSelect);
     emit commentInserted(index, text);
   } else {
     ui.commentList->addItem(text);
-    ui.commentList->setCurrentRow(ui.commentList->count() - 1, QItemSelectionModel::SelectCurrent);
+    ui.commentList->setCurrentRow(ui.commentList->count() - 1, QItemSelectionModel::ClearAndSelect);
     emit commentAdded(text);
   }
 }
@@ -106,11 +106,11 @@ void MainWindow::addFortune(QString& text) {
   if (ui.fortuneList->currentItem()) {
     int index = ui.fortuneList->currentRow() + 1;
     ui.fortuneList->insertItem(index, text);
-    ui.fortuneList->setCurrentRow(index, QItemSelectionModel::SelectCurrent);
+    ui.fortuneList->setCurrentRow(index, QItemSelectionModel::ClearAndSelect);
     emit fortuneInserted(index, text);
   } else {
     ui.fortuneList->addItem(text);
-    ui.fortuneList->setCurrentRow(ui.fortuneList->count() - 1, QItemSelectionModel::SelectCurrent);
+    ui.fortuneList->setCurrentRow(ui.fortuneList->count() - 1, QItemSelectionModel::ClearAndSelect);
     emit fortuneAdded(text);
   }
 }
@@ -319,7 +319,7 @@ void MainWindow::findNext(QListWidget* target, FindDialog::Options *findOpts) {
     else
       found = entry.contains(findOpts->searchText, (findOpts->matchCase) ? Qt::CaseSensitive : Qt::CaseInsensitive);
     if (found) {
-      target->setCurrentRow(searchIndex, QItemSelectionModel::SelectCurrent);
+      target->setCurrentRow(searchIndex, QItemSelectionModel::ClearAndSelect);
       emit searchTextFound(findOpts->searchText);
     }
     else
