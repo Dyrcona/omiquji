@@ -22,16 +22,6 @@
 #include <QDialog>
 #include <QString>
 
-struct FindOptions
-{
-  QString searchTerm;
-  bool fromStart;
-  bool matchCase;
-  bool matchWholeWords;
-  bool isRegexp;
-  bool reverse;
-};
-
 namespace Ui {
 class FindDialog;
 }
@@ -41,6 +31,15 @@ class FindDialog : public QDialog
   Q_OBJECT
 
 public:
+  struct Options
+  {
+    QString searchTerm;
+    bool fromStart;
+    bool matchCase;
+    bool matchWholeWords;
+    bool isRegexp;
+    bool searchBackwards;
+  };
   explicit FindDialog(QWidget *parent = nullptr);
   ~FindDialog();
 
@@ -48,7 +47,7 @@ public slots:
   void findClicked();
 
 signals:
-  void findNext(FindOptions*);
+  void findNext(FindDialog::Options*);
   void matchCaseCheckBoxStateChanged(int);
   void fromStartCheckBoxStateChanged(int);
   void searchBackwardsCheckBoxStateChanged(int);
@@ -63,7 +62,7 @@ private slots:
 
 private:
   Ui::FindDialog *ui;
-  FindOptions *findOpts;
+  FindDialog::Options *options;
 };
 
 #endif // FINDDIALOG_HH

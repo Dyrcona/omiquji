@@ -24,9 +24,8 @@
 
 #include "ui_mainwindow.h"
 #include "omidoc.hh"
+#include "finddialog.hh"
 class EditDialog;
-class FindDialog;
-struct FindOptions;
 
 class MainWindow : public QMainWindow
 {
@@ -65,8 +64,8 @@ private slots:
   void clearRecentFiles();
   void searchComments();
   void searchFortunes();
-  void findNextInComments(FindOptions*);
-  void findNextInFortunes(FindOptions*);
+  void findNextInComments(FindDialog::Options*);
+  void findNextInFortunes(FindDialog::Options*);
   void toggleNewSearch(int);
 
 private:
@@ -90,7 +89,7 @@ private:
   void createStatusBar();
   void updateStatusBar();
   bool setupSearch(QListWidget*);
-  void findNext(QListWidget*, FindOptions*);
+  void findNext(QListWidget*, FindDialog::Options*);
   void setupOmiDoc();
 
   Ui::MainWindow ui;

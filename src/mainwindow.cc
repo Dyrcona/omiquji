@@ -19,7 +19,6 @@
 #include "mainwindow.hh"
 #include "editdialog.hh"
 #include "aboutdialog.hh"
-#include "finddialog.hh"
 
 int MainWindow::maxRecentFiles = 0;
 QSettings *MainWindow::settings = 0;
@@ -236,11 +235,11 @@ void MainWindow::searchFortunes() {
   }
 }
 
-void MainWindow::findNextInComments(FindOptions *findOpts) {
+void MainWindow::findNextInComments(FindDialog::Options *findOpts) {
   findNext(ui.commentList, findOpts);
 }
 
-void MainWindow::findNextInFortunes(FindOptions *findOpts) {
+void MainWindow::findNextInFortunes(FindDialog::Options *findOpts) {
   findNext(ui.fortuneList, findOpts);
 }
 
@@ -259,23 +258,23 @@ bool MainWindow::setupSearch(QListWidget* target) {
   return false;
 }
 
-void MainWindow::findNext(QListWidget* target, FindOptions *findOpts) {
-  int step = (findOpts->reverse) ? -1 : 1;
-  int bound = (findOpts->reverse) ? -1 : target->count();
+void MainWindow::findNext(QListWidget* target, FindDialog::Options *findOpts) {
+  int step = (findOpts->searchBackwards) ? -1 : 1;
+  int bound = (findOpts->searchBackwards) ? -1 : target->count();
   bool found = false;
   QRegularExpression re; // In case we need it.
 
   if (isNewSearch) {
     isNewSearch = false;
     if (findOpts->fromStart)
-      searchIndex = (findOpts->reverse) ? target->count() - 1 : 0;
+      searchIndex = (findOpts->searchBackwards) ? target->count() - 1 : 0;
     else
       searchIndex = (target->currentItem()) ? target->currentRow() : 0;
   } else {
     searchIndex += step;
     if (searchIndex < 0 || searchIndex >= target->count()) {
       // Start over
-      if (findOpts->reverse)
+      if (findOpts->searchBackwards)
         searchIndex = target->count() - 1;
       else
         searchIndex = 0;

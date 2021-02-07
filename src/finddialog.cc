@@ -23,7 +23,7 @@
 FindDialog::FindDialog(QWidget *parent) :
   QDialog(parent),
   ui(new Ui::FindDialog),
-  findOpts(new FindOptions)
+  options(new FindDialog::Options)
 {
   ui->setupUi(this);
   ui->extensionWidget->setVisible(false);
@@ -31,7 +31,7 @@ FindDialog::FindDialog(QWidget *parent) :
 
 FindDialog::~FindDialog()
 {
-  delete findOpts;
+  delete options;
   delete ui;
 }
 
@@ -42,19 +42,19 @@ void FindDialog::findClicked()
     QApplication::beep();
     // TODO: "Flash" the widget background so it is obvious what is going on.
   } else {
-    findOpts->searchTerm = ui->lineEdit->text();
-    findOpts->fromStart = ui->fromStartCheckBox->isChecked();
-    findOpts->matchCase = ui->caseCheckBox->isChecked();
-    findOpts->matchWholeWords = ui->wholeCheckBox->isChecked();
-    findOpts->isRegexp = ui->regexCheckBox->isChecked();
-    findOpts->reverse = ui->backwardsCheckBox->isChecked();
-    emit findNext(findOpts);
+    options->searchTerm = ui->lineEdit->text();
+    options->fromStart = ui->fromStartCheckBox->isChecked();
+    options->matchCase = ui->caseCheckBox->isChecked();
+    options->matchWholeWords = ui->wholeCheckBox->isChecked();
+    options->isRegexp = ui->regexCheckBox->isChecked();
+    options->searchBackwards = ui->backwardsCheckBox->isChecked();
+    emit findNext(options);
   }
 }
 
 void FindDialog::closeEvent(QCloseEvent *event)
 {
-  disconnect(this, SIGNAL(findNext(FindOptions*)), this->parentWidget(), nullptr);
+  disconnect(this, SIGNAL(findNext(FindDialog::Options*)), this->parentWidget(), nullptr);
   event->accept();
 }
 
