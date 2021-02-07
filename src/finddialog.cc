@@ -18,7 +18,6 @@
  */
 #include "finddialog.hh"
 #include "ui_finddialog.h"
-#include <QCloseEvent>
 
 FindDialog::FindDialog(QWidget *parent) :
   QDialog(parent),
@@ -50,12 +49,6 @@ void FindDialog::findClicked()
     options->searchBackwards = ui->backwardsCheckBox->isChecked();
     emit findNext(options);
   }
-}
-
-void FindDialog::closeEvent(QCloseEvent *event)
-{
-  disconnect(this, SIGNAL(findNext(FindDialog::Options*)), this->parentWidget(), nullptr);
-  event->accept();
 }
 
 void FindDialog::checkBoxStateChanged(int state)

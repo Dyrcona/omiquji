@@ -54,9 +54,6 @@ signals:
   void regularExpressionCheckBoxStateChanged(int);
   void wholeWordsCheckBoxStateChanged(int);
 
-protected:
-  void closeEvent(QCloseEvent*);
-
 private slots:
   void checkBoxStateChanged(int);
 

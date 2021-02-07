@@ -248,6 +248,8 @@ bool MainWindow::setupSearch(QListWidget* target) {
     if (!findDialog) {
       findDialog = new FindDialog(this);
       connect(findDialog, &FindDialog::fromStartCheckBoxStateChanged, this, &MainWindow::toggleNewSearch);
+    } else {
+      disconnect(findDialog, &FindDialog::findNext, this, nullptr);
     }
     findDialog->show();
     findDialog->raise();
