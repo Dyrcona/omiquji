@@ -41,7 +41,6 @@ void FindDialog::findClicked()
     QApplication::beep();
     // TODO: "Flash" the widget background so it is obvious what is going on.
   } else {
-    addSearchTextItem(ui->searchTextComboBox->currentText());
     options->searchText = ui->searchTextComboBox->currentText();
     options->fromStart = ui->fromStartCheckBox->isChecked();
     options->matchCase = ui->caseCheckBox->isChecked();

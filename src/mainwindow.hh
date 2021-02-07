@@ -41,6 +41,7 @@ signals:
   void fortuneAdded(QString&);
   void fortuneRemovedAt(int);
   void fortuneReplacedAt(int, QString&);
+  void searchTextFound(const QString&);
   
 protected:
   void closeEvent(QCloseEvent*);

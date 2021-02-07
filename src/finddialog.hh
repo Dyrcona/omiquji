@@ -43,6 +43,9 @@ public:
   explicit FindDialog(QWidget *parent = nullptr);
   ~FindDialog();
 
+public slots:
+  void addSearchTextItem(const QString&);
+
 signals:
   void findNext(FindDialog::Options*);
   void matchCaseCheckBoxStateChanged(int);
@@ -58,7 +61,6 @@ private slots:
 private:
   Ui::FindDialog *ui;
   FindDialog::Options *options;
-  void addSearchTextItem(const QString&);
 };
 
 #endif // FINDDIALOG_HH
