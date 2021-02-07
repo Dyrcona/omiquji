@@ -36,12 +36,13 @@ FindDialog::~FindDialog()
 
 void FindDialog::findClicked()
 {
-  if (ui->lineEdit->text().length() == 0) {
-    ui->lineEdit->setFocus(Qt::OtherFocusReason);
+  if (ui->searchTextComboBox->currentText().length() == 0) {
+    ui->searchTextComboBox->setFocus(Qt::OtherFocusReason);
     QApplication::beep();
     // TODO: "Flash" the widget background so it is obvious what is going on.
   } else {
-    options->searchTerm = ui->lineEdit->text();
+    addSearchTextItem(ui->searchTextComboBox->currentText());
+    options->searchText = ui->searchTextComboBox->currentText();
     options->fromStart = ui->fromStartCheckBox->isChecked();
     options->matchCase = ui->caseCheckBox->isChecked();
     options->matchWholeWords = ui->wholeCheckBox->isChecked();
@@ -64,4 +65,21 @@ void FindDialog::checkBoxStateChanged(int state)
     emit regularExpressionCheckBoxStateChanged(state);
   else
     emit searchBackwardsCheckBoxStateChanged(state);
+}
+
+void FindDialog::addSearchTextItem(const QString &text)
+{
+  QComboBox *combo = ui->searchTextComboBox;
+  bool add = true;
+  int items = combo->count();
+  if (items > 0) {
+    for (int i = 0; i < items; i++) {
+      if (combo->itemText(i) == text) {
+        add = false;
+        break;
+      }
+    }
+  }
+  if (add)
+    combo->addItem(text);
 }

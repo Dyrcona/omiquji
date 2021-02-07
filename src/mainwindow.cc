@@ -284,9 +284,9 @@ void MainWindow::findNext(QListWidget* target, FindDialog::Options *findOpts) {
   }
 
   if (findOpts->matchWholeWords)
-    re.setPattern("\\W" + findOpts->searchTerm + "\\W");
+    re.setPattern("\\W" + findOpts->searchText + "\\W");
   else if (findOpts->isRegexp)
-    re.setPattern(findOpts->searchTerm);
+    re.setPattern(findOpts->searchText);
 
   if (findOpts->matchWholeWords || findOpts->isRegexp) {
     if (!findOpts->matchCase)
@@ -298,7 +298,7 @@ void MainWindow::findNext(QListWidget* target, FindDialog::Options *findOpts) {
     if (findOpts->matchWholeWords || findOpts->isRegexp)
       found = entry.contains(re);
     else
-      found = entry.contains(findOpts->searchTerm, (findOpts->matchCase) ? Qt::CaseSensitive : Qt::CaseInsensitive);
+      found = entry.contains(findOpts->searchText, (findOpts->matchCase) ? Qt::CaseSensitive : Qt::CaseInsensitive);
     if (found)
       target->setCurrentRow(searchIndex, QItemSelectionModel::SelectCurrent);
     else

@@ -33,7 +33,7 @@ class FindDialog : public QDialog
 public:
   struct Options
   {
-    QString searchTerm;
+    QString searchText;
     bool fromStart;
     bool matchCase;
     bool matchWholeWords;
@@ -42,9 +42,6 @@ public:
   };
   explicit FindDialog(QWidget *parent = nullptr);
   ~FindDialog();
-
-public slots:
-  void findClicked();
 
 signals:
   void findNext(FindDialog::Options*);
@@ -55,11 +52,13 @@ signals:
   void wholeWordsCheckBoxStateChanged(int);
 
 private slots:
+  void findClicked();
   void checkBoxStateChanged(int);
 
 private:
   Ui::FindDialog *ui;
   FindDialog::Options *options;
+  void addSearchTextItem(const QString&);
 };
 
 #endif // FINDDIALOG_HH
