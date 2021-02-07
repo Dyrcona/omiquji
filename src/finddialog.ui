@@ -246,9 +246,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>searchTextComboBox</sender>
+   <signal>currentTextChanged(QString)</signal>
+   <receiver>FindDialog</receiver>
+   <slot>comboBoxCurrentTextChanged(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>153</x>
+     <y>17</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>402</x>
+     <y>176</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>findClicked()</slot>
   <slot>checkBoxStateChanged(int)</slot>
+  <slot>comboBoxCurrentTextChanged(QString)</slot>
  </slots>
 </ui>

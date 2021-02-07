@@ -53,10 +53,12 @@ signals:
   void searchBackwardsCheckBoxStateChanged(int);
   void regularExpressionCheckBoxStateChanged(int);
   void wholeWordsCheckBoxStateChanged(int);
+  void searchTextComboBoxTextChanged(const QString&);
 
 private slots:
   void findClicked();
   void checkBoxStateChanged(int);
+  void comboBoxCurrentTextChanged(const QString&);
 
 private:
   Ui::FindDialog *ui;

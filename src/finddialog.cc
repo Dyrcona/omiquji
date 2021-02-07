@@ -82,3 +82,7 @@ void FindDialog::addSearchTextItem(const QString &text)
   if (add)
     combo->addItem(text);
 }
+
+void FindDialog::comboBoxCurrentTextChanged(const QString &text) {
+  emit searchTextComboBoxTextChanged(text);
+}
