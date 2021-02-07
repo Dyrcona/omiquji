@@ -341,16 +341,14 @@ qint64 OmiDoc::readFromStrfile(QFile &file) {
       data[length] = 0;
       char *start = data;
       while (true) {
-        char *next = std::strstr(start, "%\n");
+        char *next = std::strstr(start, "\n%\n");
         if (next) {
-          // Make sure the % is preceded by a newline.
-          if (next > data && *(next - 1) != '\n') continue;
-          length = next - start;
-          if (length > 0) {
+          length = next - start + 1;
+          if (length > 1) {
             QString str = QString::fromUtf8(start, length);
             this->addFortune(str);
           }
-          start = next + 2;
+          start = next + 3;
           if (start >= (data + size)) break;
         } else {
           length = std::strlen(start);
