@@ -90,15 +90,29 @@ void MainWindow::addFortunes(const QStringList &list) {
 }
 
 void MainWindow::addComment(QString& text) {
-  ui.commentList->addItem(text);
-  ui.commentList->setCurrentRow(ui.commentList->count() - 1, QItemSelectionModel::SelectCurrent);
-  emit commentAdded(text);
+  if (ui.commentList->currentItem()) {
+    int index = ui.commentList->currentRow() + 1;
+    ui.commentList->insertItem(index, text);
+    ui.commentList->setCurrentRow(index, QItemSelectionModel::SelectCurrent);
+    emit commentInserted(index, text);
+  } else {
+    ui.commentList->addItem(text);
+    ui.commentList->setCurrentRow(ui.commentList->count() - 1, QItemSelectionModel::SelectCurrent);
+    emit commentAdded(text);
+  }
 }
 
 void MainWindow::addFortune(QString& text) {
-  ui.fortuneList->addItem(text);
-  ui.fortuneList->setCurrentRow(ui.fortuneList->count() - 1, QItemSelectionModel::SelectCurrent);
-  emit fortuneAdded(text);
+  if (ui.fortuneList->currentItem()) {
+    int index = ui.fortuneList->currentRow() + 1;
+    ui.fortuneList->insertItem(index, text);
+    ui.fortuneList->setCurrentRow(index, QItemSelectionModel::SelectCurrent);
+    emit fortuneInserted(index, text);
+  } else {
+    ui.fortuneList->addItem(text);
+    ui.fortuneList->setCurrentRow(ui.fortuneList->count() - 1, QItemSelectionModel::SelectCurrent);
+    emit fortuneAdded(text);
+  }
 }
 
 void MainWindow::replaceCommentAt(int index, QString& text) {
@@ -617,6 +631,8 @@ void MainWindow::setupOmiDoc() {
     connect(this, SIGNAL(fortuneAdded(QString&)), doc, SLOT(addFortune(QString&)));
     connect(this, SIGNAL(fortuneRemovedAt(int)), doc, SLOT(removeFortuneAt(int)));
     connect(this, SIGNAL(fortuneReplacedAt(int,QString&)), doc, SLOT(replaceFortuneAt(int,QString&)));
+    connect(this, SIGNAL(commentInserted(int,QString&)), doc, SLOT(insertComment(int,QString&)));
+    connect(this, SIGNAL(fortuneInserted(int,QString&)), doc, SLOT(insertFortune(int,QString&)));
     // Connect OmiDoc's signals to our slots
     connect(doc, SIGNAL(commentsAdded(const QStringList&)), this, SLOT(addComments(const QStringList&)));
     connect(doc, SIGNAL(fortunesAdded(const QStringList&)), this, SLOT(addFortunes(const QStringList&)));

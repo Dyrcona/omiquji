@@ -48,6 +48,8 @@ public slots:
   void addFortune(QString&);
   void removeFortuneAt(int);
   void replaceFortuneAt(int, QString&);
+  void insertComment(int, QString&);
+  void insertFortune(int, QString&);
 
 signals:
   void commentsAdded(const QStringList&);

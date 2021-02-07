@@ -87,6 +87,14 @@ void OmiDoc::replaceFortuneAt(int i, QString& text) {
   }
 }
 
+void OmiDoc::insertComment(int i, QString &text) {
+  commentList->insert(i, text);
+}
+
+void OmiDoc::insertFortune(int i, QString &text) {
+  fortuneList->insert(i, text);
+}
+
 int OmiDoc::commentCount() {
   return commentList->count();
 }
