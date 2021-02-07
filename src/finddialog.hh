@@ -49,9 +49,17 @@ public slots:
 
 signals:
   void findNext(FindOptions*);
+  void matchCaseCheckBoxStateChanged(int);
+  void fromStartCheckBoxStateChanged(int);
+  void searchBackwardsCheckBoxStateChanged(int);
+  void regularExpressionCheckBoxStateChanged(int);
+  void wholeWordsCheckBoxStateChanged(int);
 
 protected:
   void closeEvent(QCloseEvent*);
+
+private slots:
+  void checkBoxStateChanged(int);
 
 private:
   Ui::FindDialog *ui;

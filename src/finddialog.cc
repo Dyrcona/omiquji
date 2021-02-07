@@ -57,3 +57,18 @@ void FindDialog::closeEvent(QCloseEvent *event)
   disconnect(this, SIGNAL(findNext(FindOptions*)), this->parentWidget(), nullptr);
   event->accept();
 }
+
+void FindDialog::checkBoxStateChanged(int state)
+{
+  QCheckBox *chb = qobject_cast<QCheckBox *>(sender());
+  if (chb == ui->caseCheckBox)
+    emit matchCaseCheckBoxStateChanged(state);
+  else if (chb == ui->fromStartCheckBox)
+    emit fromStartCheckBoxStateChanged(state);
+  else if (chb == ui->wholeCheckBox)
+    emit wholeWordsCheckBoxStateChanged(state);
+  else if (chb == ui->regexCheckBox)
+    emit regularExpressionCheckBoxStateChanged(state);
+  else
+    emit searchBackwardsCheckBoxStateChanged(state);
+}

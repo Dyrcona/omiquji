@@ -156,8 +156,89 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>fromStartCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>FindDialog</receiver>
+   <slot>checkBoxStateChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>72</x>
+     <y>52</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>257</x>
+     <y>195</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>caseCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>FindDialog</receiver>
+   <slot>checkBoxStateChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>46</x>
+     <y>80</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>147</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>backwardsCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>FindDialog</receiver>
+   <slot>checkBoxStateChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>174</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>regexCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>FindDialog</receiver>
+   <slot>checkBoxStateChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>144</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>wholeCheckBox</sender>
+   <signal>stateChanged(int)</signal>
+   <receiver>FindDialog</receiver>
+   <slot>checkBoxStateChanged(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>98</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>findClicked()</slot>
+  <slot>checkBoxStateChanged(int)</slot>
  </slots>
 </ui>

@@ -248,6 +248,7 @@ bool MainWindow::setupSearch(QListWidget* target) {
   if (target->count() > 0) {
     if (!findDialog) {
       findDialog = new FindDialog(this);
+      connect(findDialog, &FindDialog::fromStartCheckBoxStateChanged, this, &MainWindow::toggleNewSearch);
     }
     findDialog->show();
     findDialog->raise();
@@ -304,6 +305,13 @@ void MainWindow::findNext(QListWidget* target, FindOptions *findOpts) {
   }
   if (searchIndex == bound)
     QMessageBox::information(this, tr("Not Found"), tr("Search key not found."));
+}
+
+void MainWindow::toggleNewSearch(int state) {
+  if (state == Qt::Checked)
+    isNewSearch = true;
+  else
+    isNewSearch = false;
 }
 
 void MainWindow::setCurrentFile(const QString& filename)
