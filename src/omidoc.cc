@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012, 2021 Jason J.A. Stephenson <jason@sigio.com>
+ * Copyright © 2012, 2021, 2023 Jason J.A. Stephenson <jason@sigio.com>
  *
  * This file is part of omiquji.
  *
@@ -183,7 +183,7 @@ qint64 OmiDoc::writeOmifileToStream(QDataStream& stream) {
     }
     bytesOut += stream.writeRawData((const char*)commentTable,
       comments * sizeof(TableEntry));
-    delete commentTable;
+    delete[] commentTable;
   }
 
   // Write the fortunes table.
@@ -201,7 +201,7 @@ qint64 OmiDoc::writeOmifileToStream(QDataStream& stream) {
     }
     bytesOut += stream.writeRawData((const char*)fortuneTable,
       fortunes * sizeof(TableEntry));
-    delete fortuneTable;
+    delete[] fortuneTable;
   }
 
   // Write the outputList.
@@ -259,7 +259,7 @@ qint64 OmiDoc::readFromOmifile(QFile &file) {
   if (!data) return -1;
   len = file.read(data, len);
   if (len < file.size()) {
-    delete data;
+    delete[] data;
     return -1;
   }
 
@@ -322,7 +322,7 @@ qint64 OmiDoc::readFromOmifile(QFile &file) {
     }
   }
 
-  if (data) delete data;
+  if (data) delete[] data;
 
   return bytesRead;
 }
@@ -334,7 +334,7 @@ qint64 OmiDoc::readFromStrfile(QFile &file) {
     if (!data) return -1;
     qint64 length = file.read(data, size);
     if (length < size) {
-      delete data;
+      delete[] data;
       return -1;
     }
     else {
@@ -359,7 +359,7 @@ qint64 OmiDoc::readFromStrfile(QFile &file) {
           break;
         }
       }
-      delete data;
+      delete[] data;
     }
   }
   return size;
