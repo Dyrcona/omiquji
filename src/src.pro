@@ -1,4 +1,4 @@
-# Copyright © 2012, 2021 Jason J.A. Stephenson <jason@sigio.com>
+# Copyright © 2012, 2021, 2023 Jason J.A. Stephenson <jason@sigio.com>
 
 # This file is part of omiquji.
 
@@ -17,6 +17,7 @@
 TEMPLATE = app
 TARGET = omiquji
 QT += widgets
+DEFINES += QT_DISABLE_DEPRECATED_UP_TO=0x050F00
 
 DESTDIR=../
 
