@@ -1,5 +1,5 @@
 /*
- * Copyright © 2012, 2021 Jason J.A. Stephenson <jason@sigio.com>
+ * Copyright © 2012, 2021, 2023 Jason J.A. Stephenson <jason@sigio.com>
  *
  * This file is part of omiquji.
  *
@@ -25,7 +25,7 @@ int main(int argc, char **argv)
   QCoreApplication::setOrganizationName("Sigio.com");
   QCoreApplication::setOrganizationDomain("sigio.com");
   QCoreApplication::setApplicationName("omiquji");
-  QCoreApplication::setApplicationVersion("0.2.2");
+  QCoreApplication::setApplicationVersion("0.3.0");
   MainWindow *window = new MainWindow(true);
   window->show();
   return app.exec();
