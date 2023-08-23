@@ -38,6 +38,7 @@ void FindDialog::findClicked()
 {
   if (ui->searchTextComboBox->currentText().length() == 0) {
     ui->searchTextComboBox->setFocus(Qt::OtherFocusReason);
+    // TODO: Add code so the "beep" works on GNU/Linux with Gnome.
     QApplication::beep();
     // TODO: "Flash" the widget background so it is obvious what is going on.
   } else {
