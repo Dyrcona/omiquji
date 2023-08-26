@@ -146,16 +146,16 @@ qint64 OmiDoc::writeOmifileToStream(QDataStream& stream) {
   header.version = omikuji_version;
   if (comments) {
     offset = sizeof(OmikujiHeader);
-    header.commentHeader.offset = qToBigEndian(offset);
-    header.commentHeader.length = qToBigEndian(comments);
+    header.commentHeader.offset = qToBigEndian<quint32>(offset);
+    header.commentHeader.length = qToBigEndian<quint32>(comments);
     offset += comments * sizeof(TableEntry);
   } else {
     header.commentHeader.offset = 0;
     header.commentHeader.length = 0;
   }
   if (fortunes) {
-    header.fortuneHeader.offset = qToBigEndian(offset);
-    header.fortuneHeader.length = qToBigEndian(fortunes);
+    header.fortuneHeader.offset = qToBigEndian<quint32>(offset);
+    header.fortuneHeader.length = qToBigEndian<quint32>(fortunes);
     offset += fortunes * sizeof(TableEntry);
   } else {
     header.fortuneHeader.offset = 0;
@@ -177,8 +177,8 @@ qint64 OmiDoc::writeOmifileToStream(QDataStream& stream) {
       QString string = commentList->at(i);
       QByteArray entry = string.toUtf8();
       outputList->append(entry);
-      commentTable[i].offset = qToBigEndian(offset);
-      commentTable[i].length = qToBigEndian(entry.size());
+      commentTable[i].offset = qToBigEndian<quint32>(offset);
+      commentTable[i].length = qToBigEndian<quint32>(entry.size());
       offset += entry.size();
     }
     bytesOut += stream.writeRawData((const char*)commentTable,
@@ -195,8 +195,8 @@ qint64 OmiDoc::writeOmifileToStream(QDataStream& stream) {
       QString string = fortuneList->at(i);
       QByteArray entry = string.toUtf8();
       outputList->append(entry);
-      fortuneTable[i].offset = qToBigEndian(offset);
-      fortuneTable[i].length = qToBigEndian(entry.size());
+      fortuneTable[i].offset = qToBigEndian<quint32>(offset);
+      fortuneTable[i].length = qToBigEndian<quint32>(entry.size());
       offset += entry.size();
     }
     bytesOut += stream.writeRawData((const char*)fortuneTable,
@@ -271,13 +271,13 @@ qint64 OmiDoc::readFromOmifile(QFile &file) {
     if (checkOmikujiHeader(header)) {
       // Fix the other header fields.
       header.commentHeader.offset =
-      qFromBigEndian(header.commentHeader.offset);
+      qFromBigEndian<quint32>(header.commentHeader.offset);
       header.commentHeader.length =
-      qFromBigEndian(header.commentHeader.length);
+      qFromBigEndian<quint32>(header.commentHeader.length);
       header.fortuneHeader.offset =
-      qFromBigEndian(header.fortuneHeader.offset);
+      qFromBigEndian<quint32>(header.fortuneHeader.offset);
       header.fortuneHeader.length =
-      qFromBigEndian(header.fortuneHeader.length);
+      qFromBigEndian<quint32>(header.fortuneHeader.length);
 
       // Check for and copy comments.
       if (header.commentHeader.offset && header.commentHeader.length) {
@@ -384,8 +384,8 @@ bool checkOmikujiHeader(const OmikujiHeader header) {
 
 TableEntry *copyTableEntry(TableEntry *entry, char *data, quint32 offset) {
   std::memcpy(entry, (data + offset), sizeof(TableEntry));
-  entry->offset = qFromBigEndian(entry->offset);
-  entry->length = qFromBigEndian(entry->length);
+  entry->offset = qFromBigEndian<quint32>(entry->offset);
+  entry->length = qFromBigEndian<quint32>(entry->length);
   return entry;
 }
 
