@@ -2,6 +2,7 @@ Makefile
 omiquji
 .qmake.stash
 omiquji.pro.user
+build/
 src/Makefile
 src/aboutdialog.o
 src/editdialog.o
