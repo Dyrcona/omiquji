@@ -1,5 +1,5 @@
 /*
- * Copyright © 2021 Jason J.A. Stephenson <jason@sigio.com>
+ * Copyright © 2021, 2024 Jason J.A. Stephenson <jason@sigio.com>
  *
  * This file is part of omiquji.
  *
@@ -38,8 +38,6 @@ void FindDialog::findClicked()
 {
   if (ui->searchTextComboBox->currentText().length() == 0) {
     ui->searchTextComboBox->setFocus(Qt::OtherFocusReason);
-    // TODO: Add code so the "beep" works on GNU/Linux with Gnome.
-    QApplication::beep();
     // TODO: "Flash" the widget background so it is obvious what is going on.
   } else {
     options->searchText = ui->searchTextComboBox->currentText();
